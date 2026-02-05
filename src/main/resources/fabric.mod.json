@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "batcg",
+	"version": "${version}",
+	"name": "Batcg",
+	"description": "Cobblemon Card Mod by Batmite2B",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "MIT",
+	"icon": "assets/batcg/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"bat.batcg.Batcg"
+		],
+		"fabric-datagen": [
+			"bat.batcg.BatcgDataGenerator"
+		],
+		"client": [
+			"bat.batcg.BatcgClient"
+		]
+	},
+	"mixins": [
+		"batcg.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.18.4",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
