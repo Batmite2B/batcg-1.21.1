@@ -1,8 +1,10 @@
 package bat.batcg;
 
+import bat.batcg.card.ModBoosterComponents;
 import bat.batcg.card.ModCardComponents;
 import bat.batcg.command.ModCommands;
 import bat.batcg.item.ModItems;
+import bat.batcg.network.BatcgPackets;
 import net.fabricmc.api.ModInitializer;
 import software.bernie.geckolib.GeckoLib;
 
@@ -22,6 +24,9 @@ public class Batcg implements ModInitializer {
 		ModItems.RegisterModItems();
 		ModCardComponents.initialize();
 		ModCommands.register();
+		ModBoosterComponents.initialize();
+		BatcgPackets.registerPayloads();
+		BatcgPackets.initServerReceivers();
 
 
 		// This code runs as soon as Minecraft is in a mod-load-ready state.

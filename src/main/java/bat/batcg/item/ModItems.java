@@ -14,6 +14,13 @@ public class ModItems {
     public static final Item POKEMONCARD =
             registerItem("pokemoncard", new PokemonCardItem(new Item.Settings().maxCount(1)));
 
+
+    public static final Item BOOSTER_PACK = registerItem(
+            "booster_pack",
+            new BoosterPackItem(new Item.Settings().maxCount(16))
+    );
+
+
     private static Item registerItem(String name, Item item) {
         return Registry.register(Registries.ITEM, Identifier.of(Batcg.MOD_ID, name), item);
     }

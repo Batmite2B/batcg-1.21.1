@@ -1,61 +1,104 @@
 package bat.batcg.card;
 
 import bat.batcg.Batcg;
+import net.fabricmc.loader.api.FabricLoader;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
+import java.nio.file.*;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class CardIdIndex {
 
-    // OJO: ahora apunta DENTRO de assets/batcg/
-    private static final String RESOURCE = "assets/batcg/batcg_card_ids.txt";
-    private static Set<String> IDS;
+    private static volatile List<String> ALL_IDS; // sorted lowercase
+    private static volatile List<String> NORMAL_IDS;
+    private static volatile List<String> SHINY_IDS;
 
     private CardIdIndex() {}
 
-    public static Collection<String> all() {
+    // --- Compat con tu ModCommands ---
+    public static List<String> all() { return allIds(); }
+    public static boolean exists(String id) { return isValid(id); }
+    public static String normalize(String raw) {
+        if (raw == null) return "";
+        return raw.toLowerCase(Locale.ROOT).trim();
+    }
+    // -------------------------------
+
+    public static List<String> allIds() {
         ensureLoaded();
-        return IDS;
+        return ALL_IDS;
     }
 
-    public static boolean exists(String id) {
+    public static List<String> normalIds() {
         ensureLoaded();
-        return IDS.contains(normalize(id));
+        return NORMAL_IDS;
     }
 
-    public static String normalize(String id) {
-        return id == null ? "" : id.trim().toLowerCase(Locale.ROOT);
+    public static List<String> shinyIds() {
+        ensureLoaded();
+        return SHINY_IDS;
+    }
+
+    public static boolean isValid(String id) {
+        if (id == null) return false;
+        ensureLoaded();
+        String n = normalize(id);
+        return Collections.binarySearch(ALL_IDS, n) >= 0;
     }
 
     private static void ensureLoaded() {
-        if (IDS != null) return;
+        if (ALL_IDS != null) return;
 
-        Set<String> set = new HashSet<>();
+        synchronized (CardIdIndex.class) {
+            if (ALL_IDS != null) return;
 
-        try (InputStream in = CardIdIndex.class.getClassLoader().getResourceAsStream(RESOURCE)) {
-            if (in == null) {
-                Batcg.LOGGER.error("[BATCG] NO se encontró {}", RESOURCE);
-                IDS = Collections.unmodifiableSet(set);
-                return;
-            }
+            final List<String> ids = new ArrayList<>(); // <-- ya no se reasigna
 
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
-                String line;
-                while ((line = br.readLine()) != null) {
-                    String s = normalize(line);
-                    if (!s.isEmpty()) set.add(s);
+            var container = FabricLoader.getInstance()
+                    .getModContainer(Batcg.MOD_ID)
+                    .orElseThrow(() -> new IllegalStateException("Mod container not found: " + Batcg.MOD_ID));
+
+            for (Path root : container.getRootPaths()) {
+                Path icons = root.resolve("assets")
+                        .resolve(Batcg.MOD_ID)
+                        .resolve("models")
+                        .resolve("item")
+                        .resolve("card")
+                        .resolve("icon");
+
+                if (!Files.exists(icons)) continue;
+
+                try (Stream<Path> walk = Files.walk(icons)) {
+                    walk.filter(p -> p.getFileName().toString().endsWith(".json"))
+                            .forEach(p -> {
+                                String file = p.getFileName().toString();
+                                String base = file.substring(0, file.length() - 5).toLowerCase(Locale.ROOT);
+                                ids.add(base);
+                            });
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed reading card icon models from: " + icons, e);
                 }
             }
 
-            Batcg.LOGGER.info("[BATCG] CardIdIndex cargó {} ids desde {}", set.size(), RESOURCE);
+            // Creamos una lista nueva en vez de reasignar "ids"
+            List<String> sortedDistinct = ids.stream()
+                    .distinct()
+                    .sorted()
+                    .collect(Collectors.toList());
 
-        } catch (Exception e) {
-            Batcg.LOGGER.error("[BATCG] Error leyendo " + RESOURCE, e);
+            List<String> shiny = sortedDistinct.stream()
+                    .filter(s -> s.endsWith("shiny"))
+                    .collect(Collectors.toList());
+
+            List<String> normal = sortedDistinct.stream()
+                    .filter(s -> !s.endsWith("shiny"))
+                    .collect(Collectors.toList());
+
+            ALL_IDS = sortedDistinct;
+            SHINY_IDS = shiny;
+            NORMAL_IDS = normal;
         }
-
-        IDS = Collections.unmodifiableSet(set);
     }
 }
