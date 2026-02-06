@@ -1,0 +1,7 @@
+{
+  "parent": "batcg:item/card/frame",
+  "textures": {
+    "0": "batcg:item/card/frame/epic",
+    "particle": "batcg:item/card/frame/epic"
+  }
+}

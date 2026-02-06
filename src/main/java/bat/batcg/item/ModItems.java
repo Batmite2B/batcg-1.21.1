@@ -11,7 +11,7 @@ import net.minecraft.util.Identifier;
 
 public class ModItems {
 
-    public static final Item POKEMONCARD = registerItem("pokemoncard",new Item(new Item.Settings()));
+    public static final Item POKEMONCARD = registerItem("pokemoncard",new Item(new Item.Settings().maxCount(1)));
 
     private static Item registerItem(String name, Item item) {
         return Registry.register(Registries.ITEM, Identifier.of(Batcg.MOD_ID, name), item);

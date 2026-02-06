@@ -1,5 +1,7 @@
 package bat.batcg;
 
+import bat.batcg.card.ModCardComponents;
+import bat.batcg.command.ModCommands;
 import bat.batcg.item.ModItems;
 import net.fabricmc.api.ModInitializer;
 
@@ -17,11 +19,13 @@ public class Batcg implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		ModItems.RegisterModItems();
+		ModCardComponents.initialize();
+		ModCommands.register();
 
 		// This code runs as soon as Minecraft is in a mod-load-ready state.
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 
-		LOGGER.info("Hello Fabric world!");
+		LOGGER.info("BATCG LOADED!");
 	}
 }
