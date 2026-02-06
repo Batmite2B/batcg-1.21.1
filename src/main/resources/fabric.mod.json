@@ -32,6 +32,12 @@
 		"fabricloader": ">=0.18.4",
 		"minecraft": "~1.21.1",
 		"java": ">=21",
-		"fabric-api": "*"
+		"fabric-api": "*",
+		"geckolib": "*"
+	},
+
+	"breaks": {
+		"geckolib": "<0.0.0"
 	}
+
 }

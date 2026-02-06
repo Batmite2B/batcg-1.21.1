@@ -4,6 +4,7 @@ import bat.batcg.card.ModCardComponents;
 import bat.batcg.command.ModCommands;
 import bat.batcg.item.ModItems;
 import net.fabricmc.api.ModInitializer;
+import software.bernie.geckolib.GeckoLib;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ public class Batcg implements ModInitializer {
 		ModItems.RegisterModItems();
 		ModCardComponents.initialize();
 		ModCommands.register();
+
 
 		// This code runs as soon as Minecraft is in a mod-load-ready state.
 		// However, some things (like resources) may still be uninitialized.

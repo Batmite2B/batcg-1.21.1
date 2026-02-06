@@ -25,37 +25,50 @@ public class PokemonCardItem extends Item {
         return stack;
     }
 
-    // ✅ Label del item (lo que ves como "nombre" del item)
+    // ✅ Nombre del item: color por rareza + estrella si SHINY
     @Override
     public Text getName(ItemStack stack) {
         String pokemonId = stack.get(ModCardComponents.POKEMON_ID);
+        String tierName  = stack.get(ModCardComponents.CARD_TIER);
+
         if (pokemonId == null || pokemonId.isBlank()) {
             return Text.literal("Invalid Card").formatted(Formatting.RED);
         }
-        return getPokemonNameText(pokemonId);
+
+        CardTier tier = safeTier(tierName);
+
+        MutableText name = getPokemonNameText(pokemonId).copy().formatted(tier.getColor());
+
+        // ⭐ Solo para SHINY (sin "(Shiny)")
+        if (tier == CardTier.SHINY) {
+            return Text.literal("★ ").formatted(Formatting.GOLD).append(name);
+        }
+
+        return name;
     }
 
-    // ✅ Tooltip: nombre + rareza con color
+    // ✅ Tooltip SIN nombre (solo rareza)
     @Override
     public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
-        String pokemonId = stack.get(ModCardComponents.POKEMON_ID);
-        String tierName  = stack.get(ModCardComponents.CARD_TIER);
+        String tierName = stack.get(ModCardComponents.CARD_TIER);
 
-        if (pokemonId == null || pokemonId.isBlank() || tierName == null || tierName.isBlank()) {
+        if (tierName == null || tierName.isBlank()) {
             tooltip.add(Text.literal("Invalid Card").formatted(Formatting.RED));
             return;
         }
 
         CardTier tier = safeTier(tierName);
 
-        // Línea 1: Nombre bonito (gris)
-        tooltip.add(getPokemonNameText(pokemonId).copy().formatted(Formatting.GRAY));
-
-        // Línea 2: Rareza con color
         tooltip.add(
                 Text.literal("Rarity: ").formatted(Formatting.DARK_GRAY)
                         .append(Text.literal(tier.getDisplayName()).formatted(tier.getColor()))
         );
+
+        // (Opcional) Si quieres depurar IDs, descomenta:
+        // String pokemonId = stack.get(ModCardComponents.POKEMON_ID);
+        // if (pokemonId != null && !pokemonId.isBlank()) {
+        //     tooltip.add(Text.literal(pokemonId).formatted(Formatting.DARK_GRAY));
+        // }
     }
 
     // -------------------------
@@ -63,43 +76,40 @@ public class PokemonCardItem extends Item {
     // -------------------------
 
     private static CardTier safeTier(String tierName) {
+        if (tierName == null) return CardTier.COMMON;
         try {
-            return CardTier.valueOf(tierName.toUpperCase(Locale.ROOT));
+            return CardTier.valueOf(tierName.trim().toUpperCase(Locale.ROOT));
         } catch (Exception ignored) {
             return CardTier.COMMON;
         }
     }
 
     /**
+     * Nombre del Pokémon:
      * - Usa traducción si existe: "pokemon.batcg.<id>"
-     * - Si no existe: fallback: "001bulbasaur" -> "Bulbasaur"
-     * - Si termina en "shiny": añade "(Shiny)"
+     * - Si no existe, fallback: "001bulbasaur" -> "Bulbasaur"
+     * - Si el id termina en "shiny", usa el baseId (sin shiny)
      */
     private static MutableText getPokemonNameText(String pokemonId) {
         String clean = pokemonId.toLowerCase(Locale.ROOT).trim();
 
-        boolean shiny = clean.endsWith("shiny");
+        boolean shiny = clean.endsWith("shiny") && clean.length() > "shiny".length();
         String baseId = shiny ? clean.substring(0, clean.length() - "shiny".length()) : clean;
 
         String key = "pokemon.batcg." + baseId;
 
-        // Text.translatable devuelve MutableText
         MutableText name = Text.translatable(key);
 
-        // Si no existe la traducción, getString() devuelve la key tal cual
+        // fallback si no existe traducción
         if (name.getString().equals(key)) {
             name = Text.literal(prettyNameFromId(baseId));
-        }
-
-        if (shiny) {
-            name = name.append(Text.literal(" (Shiny)").formatted(Formatting.AQUA));
         }
 
         return name;
     }
 
     private static String prettyNameFromId(String baseId) {
-        String s = baseId.replaceFirst("^\\d+", ""); // quita números al inicio
+        String s = baseId.replaceFirst("^\\d+", "");
         if (s.isEmpty()) return "Unknown";
         return Character.toUpperCase(s.charAt(0)) + s.substring(1);
     }
