@@ -63,28 +63,32 @@ public class BoosterPackScreen extends Screen {
 
     @Override
     public void render(DrawContext ctx, int mouseX, int mouseY, float delta) {
-        // ✅ 1.21.1 requiere 4 args
-        this.renderBackground(ctx, mouseX, mouseY, delta);
+        ctx.fill(0, 0, this.width, this.height, 0xB0000000);
 
+        // Render de widgets primero (si tuvieras)
+        super.render(ctx, mouseX, mouseY, delta);
+
+        // Luego cartas encima (nítidas)
         int cx = this.width / 2;
         int cy = this.height / 2;
 
-        // (Opcional) dibujar BG si tienes textura real 256x160
-        // ctx.drawTexture(BG, cx - 128, cy - 80, 0, 0, 256, 160, 256, 160);
-
-        // Slots
         int slotW = 48, slotH = 64;
         int y = cy - 32;
-        int x0 = cx - 80;
-        int x1 = cx - 24;
-        int x2 = cx + 32;
+        int[] xs = { cx - 80, cx - 24, cx + 32 };
 
-        drawCardSlot(ctx, x0, y, slotW, slotH, 0);
-        drawCardSlot(ctx, x1, y, slotW, slotH, 1);
-        drawCardSlot(ctx, x2, y, slotW, slotH, 2);
-
-        super.render(ctx, mouseX, mouseY, delta);
+        for (int i = 0; i < 3; i++) {
+            drawCardSlot(ctx, xs[i], y, slotW, slotH, i);
+        }
     }
+
+
+
+    @Override
+    public boolean shouldPause() {
+        return false;
+    }
+
+
 
     private void drawCardSlot(DrawContext ctx, int x, int y, int w, int h, int slot) {
         SlotState s = slots[slot];
