@@ -3,7 +3,6 @@ package bat.batcg.client.screen;
 import bat.batcg.card.CardTier;
 import bat.batcg.item.PokemonCardItem;
 import bat.batcg.network.ClientBoosterNetworking;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
@@ -22,6 +21,15 @@ public class BoosterPackScreen extends Screen {
     private final SlotState[] slots = new SlotState[] {
             new SlotState(), new SlotState(), new SlotState()
     };
+
+    // ✅ UI settings (ajusta a gusto)
+    private static final int SLOT_W = 72;
+    private static final int SLOT_H = 96;
+    private static final int GAP = 12;
+
+    // Guardamos posiciones para clicks
+    private int startX;
+    private int startY;
 
     public BoosterPackScreen(int handOrdinal, int revealedMask) {
         super(Text.literal("Booster Pack"));
@@ -55,93 +63,99 @@ public class BoosterPackScreen extends Screen {
     protected void init() {
         super.init();
 
-        // Si el server ya marcó reveladas, reflejarlo visualmente
         for (int i = 0; i < 3; i++) {
             slots[i].revealed = ((revealedMask & (1 << i)) != 0);
         }
+
+        recalcLayout();
+    }
+
+    private void recalcLayout() {
+        int totalW = SLOT_W * 3 + GAP * 2;
+        this.startX = (this.width - totalW) / 2;
+        this.startY = (this.height - SLOT_H) / 2;
     }
 
     @Override
     public void render(DrawContext ctx, int mouseX, int mouseY, float delta) {
+        // Fondo SIN blur (solo oscurece)
         ctx.fill(0, 0, this.width, this.height, 0xB0000000);
 
-        // Render de widgets primero (si tuvieras)
-        super.render(ctx, mouseX, mouseY, delta);
+        // Si la ventana cambia, recalcular (seguro)
+        recalcLayout();
 
-        // Luego cartas encima (nítidas)
-        int cx = this.width / 2;
-        int cy = this.height / 2;
-
-        int slotW = 48, slotH = 64;
-        int y = cy - 32;
-        int[] xs = { cx - 80, cx - 24, cx + 32 };
+        // (Opcional) si luego quieres un panel BG 256x160 centrado:
+        // int cx = this.width / 2;
+        // int cy = this.height / 2;
+        // ctx.drawTexture(BG, cx - 128, cy - 80, 0, 0, 256, 160, 256, 160);
 
         for (int i = 0; i < 3; i++) {
-            drawCardSlot(ctx, xs[i], y, slotW, slotH, i);
+            int x = startX + i * (SLOT_W + GAP);
+            drawCardSlot(ctx, x, startY, SLOT_W, SLOT_H, i);
         }
     }
-
-
 
     @Override
     public boolean shouldPause() {
         return false;
     }
 
-
-
     private void drawCardSlot(DrawContext ctx, int x, int y, int w, int h, int slot) {
         SlotState s = slots[slot];
 
+        // No revelado → back
         if (!s.revealed) {
-            // back
             ctx.drawTexture(CARD_BACK, x, y, 0, 0, w, h, w, h);
             return;
         }
 
-        // Revelado pero aún no recibimos data -> back placeholder
+        // Revelado pero sin data aún → back placeholder
         if (s.pokemonId == null || s.tier == null) {
             ctx.drawTexture(CARD_BACK, x, y, 0, 0, w, h, w, h);
             return;
         }
 
-        // Crear stack de la carta real
+        // Carta real
         ItemStack stack = PokemonCardItem.createCard(s.pokemonId, s.tier);
 
-        // ✅ Render del item centrado dentro del “slot”
-        // drawItem() renderiza el item como icono GUI (16x16). Lo escalamos para que llene 48x64.
-        float scale = 3.0f; // 16*3 = 48 exacto de ancho
-        int drawX = x;
-        int drawY = y + (h - (int)(16 * scale)) / 2; // centra vertical (64 - 48)/2 = 8
+        // ✅ Escalado NO uniforme para que el render 16x16 llene w x h
+        float baseX = w / 16.0f;
+        float baseY = h / 16.0f;
+
+// ✅ Compensa márgenes internos del render GUI del item
+        float overscanX = 1.50f; // prueba 1.12–1.25 según te guste
+        float overscanY = 1.05f; // opcional (deja 1.0f si no quieres)
+
+        float scaleX = baseX * overscanX;
+        float scaleY = baseY * overscanY;
+
+// Queremos mantenerlo centrado dentro del slot
+        float drawW = 16.0f * scaleX;
+        float drawH = 16.0f * scaleY;
+
+        float dx = x + (w - drawW) / 2.0f;
+        float dy = y + (h - drawH) / 2.0f;
 
         ctx.getMatrices().push();
-        ctx.getMatrices().translate(drawX, drawY, 200.0f);
-        ctx.getMatrices().scale(scale, scale, 1.0f);
-
-        // Render del ítem (NO uses drawItemInSlot aquí)
+        ctx.getMatrices().translate(dx, dy, 300.0f);
+        ctx.getMatrices().scale(scaleX, scaleY, 1.0f);
         ctx.drawItem(stack, 0, 0);
-
         ctx.getMatrices().pop();
+
+
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button != 0) return super.mouseClicked(mouseX, mouseY, button);
 
-        int cx = this.width / 2;
-        int cy = this.height / 2;
-
-        int w = 48, h = 64;
-        int y = cy - 32;
-        int[] xs = new int[] { cx - 80, cx - 24, cx + 32 };
-
+        // Hitboxes basados en el layout real (mismos tamaños y posiciones)
         for (int i = 0; i < 3; i++) {
-            if (inside(mouseX, mouseY, xs[i], y, w, h)) {
+            int x = startX + i * (SLOT_W + GAP);
+            int y = startY;
 
-                // si ya estaba revelada, no pedir de nuevo
-                if ((revealedMask & (1 << i)) != 0) return true;
-
-                // pedir al server revelar
+            if (inside(mouseX, mouseY, x, y, SLOT_W, SLOT_H)) {
+                if ((revealedMask & (1 << i)) != 0) return true; // ya revelada
                 ClientBoosterNetworking.requestReveal(handOrdinal, i);
                 return true;
             }

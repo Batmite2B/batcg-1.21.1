@@ -20,9 +20,12 @@ public final class BatcgModelLoading {
             addItem(ctx, "item/card/frame/epic");
             addItem(ctx, "item/card/frame/legendary");
             addItem(ctx, "item/card/frame/shiny");
+            addItem(ctx, "item/card/base");
 
             // Booster pack (si lo quieres forzar como extra)
             addItem(ctx, "item/booster_pack");
+            addItem(ctx, "item/card/base");
+
 
             // Icons
             for (String id : CardIdIndex.allIds()) {

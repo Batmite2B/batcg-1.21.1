@@ -1,6 +1,10 @@
 {
   "texture_size": [32, 32],
   "gui_light": "front",
+  "ambientocclusion": false,
+  "render_type": "cutout",
+
+
   "elements": [
     {
       "name": "icon",
