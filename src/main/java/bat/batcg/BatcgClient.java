@@ -1,10 +1,14 @@
 package bat.batcg;
 
+import bat.batcg.client.BatcgModelLoading;
+import bat.batcg.client.render.PokemonCardItemRenderer;
 import bat.batcg.client.screen.BoosterPackScreen;
+import bat.batcg.item.ModItems;
 import bat.batcg.network.payload.OpenBoosterS2CPayload;
 import bat.batcg.network.payload.RevealResultS2CPayload;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 
 public class BatcgClient implements ClientModInitializer {
@@ -14,6 +18,13 @@ public class BatcgClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
+        // ✅ 1) Registrar TODOS los modelos extra (frames + icons)
+        BatcgModelLoading.init();
+
+        // ✅ 2) Registrar el renderer del item de carta (para inventario / mano / suelo / GUI)
+        BuiltinItemRendererRegistry.INSTANCE.register(bat.batcg.item.ModItems.POKEMONCARD, PokemonCardItemRenderer.INSTANCE);
+
+        // --- Networking (booster) ---
         ClientPlayNetworking.registerGlobalReceiver(OpenBoosterS2CPayload.ID, (payload, context) -> {
             context.client().execute(() -> {
                 OPEN_SCREEN = new BoosterPackScreen(payload.handOrdinal(), payload.revealedMask());

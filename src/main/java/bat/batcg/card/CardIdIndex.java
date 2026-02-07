@@ -54,7 +54,7 @@ public final class CardIdIndex {
         synchronized (CardIdIndex.class) {
             if (ALL_IDS != null) return;
 
-            final List<String> ids = new ArrayList<>(); // <-- ya no se reasigna
+            final List<String> ids = new ArrayList<>();
 
             var container = FabricLoader.getInstance()
                     .getModContainer(Batcg.MOD_ID)
@@ -82,7 +82,6 @@ public final class CardIdIndex {
                 }
             }
 
-            // Creamos una lista nueva en vez de reasignar "ids"
             List<String> sortedDistinct = ids.stream()
                     .distinct()
                     .sorted()

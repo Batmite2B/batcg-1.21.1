@@ -25,7 +25,7 @@ public class PokemonCardItemRenderer extends SpecialItemRenderer {
             try { tier = CardTier.valueOf(tierName); } catch (Exception ignored) {}
         }
 
-        // Frame siempre por tier
+        // Frame por tier
         Identifier frameModelId = Identifier.of(
                 Batcg.MOD_ID,
                 "item/card/frame/" + tier.name().toLowerCase()
@@ -37,25 +37,17 @@ public class PokemonCardItemRenderer extends SpecialItemRenderer {
 
         String pokemonId = normalizePokemonIdForTier(pokemonIdRaw, tier);
 
-        // Icon según ID ya normalizado
         Identifier iconModelId = Identifier.of(
                 Batcg.MOD_ID,
                 "item/card/icon/" + pokemonId.toLowerCase()
         );
 
+        // Icon encima del frame (z-fighting fix)
         renderModel(iconModelId, stack, mode, false, matrices, vertexConsumers, light, overlay, () -> {
             matrices.translate(0.0F, 0.0F, -0.0012F);
         });
     }
 
-    /**
-     * Regla:
-     * - Tier SHINY => icon shiny obligado.
-     * - Otros tiers => icon shiny prohibido.
-     *
-     * Convención: shiny = "<base>shiny"
-     * Ej: "001bulbasaur" <-> "001bulbasaurshiny"
-     */
     private static String normalizePokemonIdForTier(String id, CardTier tier) {
         String clean = id.trim().toLowerCase();
 
@@ -63,10 +55,8 @@ public class PokemonCardItemRenderer extends SpecialItemRenderer {
         boolean wantsShiny = (tier == CardTier.SHINY);
 
         if (wantsShiny) {
-            // Forzar shiny
             return isShinyId ? clean : (clean + "shiny");
         } else {
-            // Prohibir shiny
             return isShinyId ? clean.substring(0, clean.length() - "shiny".length()) : clean;
         }
     }

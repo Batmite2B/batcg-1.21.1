@@ -17,7 +17,7 @@ public class ModItems {
 
     public static final Item BOOSTER_PACK = registerItem(
             "booster_pack",
-            new BoosterPackItem(new Item.Settings().maxCount(16))
+            new BoosterPackItem(new Item.Settings().maxCount(1))
     );
 
 

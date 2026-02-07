@@ -1,7 +1,9 @@
 package bat.batcg.client;
 
 import bat.batcg.Batcg;
+import bat.batcg.card.CardIdIndex;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
+import net.minecraft.client.util.ModelIdentifier;   // ✅ IMPORT CLAVE
 import net.minecraft.util.Identifier;
 
 public final class BatcgModelLoading {
@@ -10,342 +12,28 @@ public final class BatcgModelLoading {
 
     public static void init() {
         ModelLoadingPlugin.register(ctx -> {
-            // Frames (tiers)
-            add(ctx, "item/card/frame/common");
-            add(ctx, "item/card/frame/uncommon");
-            add(ctx, "item/card/frame/rare");
-            add(ctx, "item/card/frame/epic");
-            add(ctx, "item/card/frame/legendary");
-            add(ctx, "item/card/frame/shiny");
 
-            // Base parents (optional but harmless)
-            add(ctx, "item/card/frame");
-            add(ctx, "item/card/icon");
+            // Frames
+            addItem(ctx, "item/card/frame/common");
+            addItem(ctx, "item/card/frame/uncommon");
+            addItem(ctx, "item/card/frame/rare");
+            addItem(ctx, "item/card/frame/epic");
+            addItem(ctx, "item/card/frame/legendary");
+            addItem(ctx, "item/card/frame/shiny");
 
-            // ✅ ICONOS: registra TODO lo que exista como modelo
-            // Si vas agregando más icons, también quedarán listos.
-            // (Esto requiere que al menos exista un "loader" para poder conocerlos.)
-            //
-            // Como Fabric no da un "listar recursos" directo aquí de forma simple,
-            // la forma estable es:
-            // 1) Tener modelos JSON reales en assets/batcg/models/item/card/icon/<name>.json
-            // 2) Referenciarlos desde un "index" (ver abajo) o pegarlos con script.
-            //
-            // Para no pelearte, dejamos 2 ejemplos y tú pegas la lista generada.
-            //
-            // --- EJEMPLOS ---
-            add(ctx, "item/card/icon/001bulbasaur");
-            add(ctx, "item/card/icon/001bulbasaurshiny");
-            add(ctx, "item/card/icon/002ivysaur");
-            add(ctx, "item/card/icon/002ivysaurshiny");
-            add(ctx, "item/card/icon/003venusaur");
-            add(ctx, "item/card/icon/003venusaurshiny");
-            add(ctx, "item/card/icon/004charmander");
-            add(ctx, "item/card/icon/004charmandershiny");
-            add(ctx, "item/card/icon/005charmeleon");
-            add(ctx, "item/card/icon/005charmeleonshiny");
-            add(ctx, "item/card/icon/006charizard");
-            add(ctx, "item/card/icon/006charizardshiny");
-            add(ctx, "item/card/icon/007squirtle");
-            add(ctx, "item/card/icon/007squirtleshiny");
-            add(ctx, "item/card/icon/008wartortle");
-            add(ctx, "item/card/icon/008wartortleshiny");
-            add(ctx, "item/card/icon/009blastoise");
-            add(ctx, "item/card/icon/009blastoiseshiny");
-            add(ctx, "item/card/icon/010caterpie");
-            add(ctx, "item/card/icon/010caterpieshiny");
-            add(ctx, "item/card/icon/011metapod");
-            add(ctx, "item/card/icon/011metapodshiny");
-            add(ctx, "item/card/icon/012butterfree");
-            add(ctx, "item/card/icon/012butterfreeshiny");
-            add(ctx, "item/card/icon/013weedle");
-            add(ctx, "item/card/icon/013weedleshiny");
-            add(ctx, "item/card/icon/014kakuna");
-            add(ctx, "item/card/icon/014kakunashiny");
-            add(ctx, "item/card/icon/015beedrill");
-            add(ctx, "item/card/icon/015beedrillshiny");
-            add(ctx, "item/card/icon/016pidgey");
-            add(ctx, "item/card/icon/016pidgeyshiny");
-            add(ctx, "item/card/icon/017pidgeotto");
-            add(ctx, "item/card/icon/017pidgeottoshiny");
-            add(ctx, "item/card/icon/018pidgeot");
-            add(ctx, "item/card/icon/018pidgeotshiny");
-            add(ctx, "item/card/icon/019rattata");
-            add(ctx, "item/card/icon/019rattatashiny");
-            add(ctx, "item/card/icon/020raticate");
-            add(ctx, "item/card/icon/020raticateshiny");
-            add(ctx, "item/card/icon/021spearow");
-            add(ctx, "item/card/icon/021spearowshiny");
-            add(ctx, "item/card/icon/022fearow");
-            add(ctx, "item/card/icon/022fearowshiny");
-            add(ctx, "item/card/icon/023ekans");
-            add(ctx, "item/card/icon/023ekansshiny");
-            add(ctx, "item/card/icon/024arbok");
-            add(ctx, "item/card/icon/024arbokshiny");
-            add(ctx, "item/card/icon/025pikachu");
-            add(ctx, "item/card/icon/025pikachushiny");
-            add(ctx, "item/card/icon/026raichu");
-            add(ctx, "item/card/icon/026raichushiny");
-            add(ctx, "item/card/icon/027sandshrew");
-            add(ctx, "item/card/icon/027sandshrewshiny");
-            add(ctx, "item/card/icon/028sandslash");
-            add(ctx, "item/card/icon/028sandslashshiny");
-            add(ctx, "item/card/icon/029nidoranf");
-            add(ctx, "item/card/icon/029nidoranfshiny");
-            add(ctx, "item/card/icon/030nidorina");
-            add(ctx, "item/card/icon/030nidorinashiny");
-            add(ctx, "item/card/icon/031nidoqueen");
-            add(ctx, "item/card/icon/031nidoqueenshiny");
-            add(ctx, "item/card/icon/032nidoranm");
-            add(ctx, "item/card/icon/032nidoranmshiny");
-            add(ctx, "item/card/icon/033nidorino");
-            add(ctx, "item/card/icon/033nidorinoshiny");
-            add(ctx, "item/card/icon/034nidoking");
-            add(ctx, "item/card/icon/034nidokingshiny");
-            add(ctx, "item/card/icon/035clefairy");
-            add(ctx, "item/card/icon/035clefairyshiny");
-            add(ctx, "item/card/icon/036clefable");
-            add(ctx, "item/card/icon/036clefableshiny");
-            add(ctx, "item/card/icon/037vulpix");
-            add(ctx, "item/card/icon/037vulpixshiny");
-            add(ctx, "item/card/icon/038ninetales");
-            add(ctx, "item/card/icon/038ninetalesshiny");
-            add(ctx, "item/card/icon/039jigglypuff");
-            add(ctx, "item/card/icon/039jigglypuffshiny");
-            add(ctx, "item/card/icon/040wigglytuff");
-            add(ctx, "item/card/icon/040wigglytuffshiny");
-            add(ctx, "item/card/icon/041zubat");
-            add(ctx, "item/card/icon/041zubatshiny");
-            add(ctx, "item/card/icon/042golbat");
-            add(ctx, "item/card/icon/042golbatshiny");
-            add(ctx, "item/card/icon/043oddish");
-            add(ctx, "item/card/icon/043oddishshiny");
-            add(ctx, "item/card/icon/044gloom");
-            add(ctx, "item/card/icon/044gloomshiny");
-            add(ctx, "item/card/icon/045vileplume");
-            add(ctx, "item/card/icon/045vileplumeshiny");
-            add(ctx, "item/card/icon/046paras");
-            add(ctx, "item/card/icon/046parasshiny");
-            add(ctx, "item/card/icon/047parasect");
-            add(ctx, "item/card/icon/047parasectshiny");
-            add(ctx, "item/card/icon/048venonat");
-            add(ctx, "item/card/icon/048venonatshiny");
-            add(ctx, "item/card/icon/049venomoth");
-            add(ctx, "item/card/icon/049venomothshiny");
-            add(ctx, "item/card/icon/050diglett");
-            add(ctx, "item/card/icon/050diglettshiny");
-            add(ctx, "item/card/icon/051dugtrio");
-            add(ctx, "item/card/icon/051dugtrioshiny");
-            add(ctx, "item/card/icon/052meowth");
-            add(ctx, "item/card/icon/052meowthshiny");
-            add(ctx, "item/card/icon/053persian");
-            add(ctx, "item/card/icon/053persianshiny");
-            add(ctx, "item/card/icon/054psyduck");
-            add(ctx, "item/card/icon/054psyduckshiny");
-            add(ctx, "item/card/icon/055golduck");
-            add(ctx, "item/card/icon/055golduckshiny");
-            add(ctx, "item/card/icon/056mankey");
-            add(ctx, "item/card/icon/056mankeyshiny");
-            add(ctx, "item/card/icon/057primeape");
-            add(ctx, "item/card/icon/057primeapeshiny");
-            add(ctx, "item/card/icon/058growlithe");
-            add(ctx, "item/card/icon/058growlitheshiny");
-            add(ctx, "item/card/icon/059arcanine");
-            add(ctx, "item/card/icon/059arcanineshiny");
-            add(ctx, "item/card/icon/060poliwag");
-            add(ctx, "item/card/icon/060poliwagshiny");
-            add(ctx, "item/card/icon/061poliwhirl");
-            add(ctx, "item/card/icon/061poliwhirlshiny");
-            add(ctx, "item/card/icon/062poliwrath");
-            add(ctx, "item/card/icon/062poliwrathshiny");
-            add(ctx, "item/card/icon/063abra");
-            add(ctx, "item/card/icon/063abrashiny");
-            add(ctx, "item/card/icon/064kadabra");
-            add(ctx, "item/card/icon/064kadabrashiny");
-            add(ctx, "item/card/icon/065alakazam");
-            add(ctx, "item/card/icon/065alakazamshiny");
-            add(ctx, "item/card/icon/066machop");
-            add(ctx, "item/card/icon/066machopshiny");
-            add(ctx, "item/card/icon/067machoke");
-            add(ctx, "item/card/icon/067machokeshiny");
-            add(ctx, "item/card/icon/068machamp");
-            add(ctx, "item/card/icon/068machampshiny");
-            add(ctx, "item/card/icon/069bellsprout");
-            add(ctx, "item/card/icon/069bellsproutshiny");
-            add(ctx, "item/card/icon/070weepinbell");
-            add(ctx, "item/card/icon/070weepinbellshiny");
-            add(ctx, "item/card/icon/071victreebel");
-            add(ctx, "item/card/icon/071victreebelshiny");
-            add(ctx, "item/card/icon/072tentacool");
-            add(ctx, "item/card/icon/072tentacoolshiny");
-            add(ctx, "item/card/icon/073tentacruel");
-            add(ctx, "item/card/icon/073tentacruelshiny");
-            add(ctx, "item/card/icon/074geodude");
-            add(ctx, "item/card/icon/074geodudeshiny");
-            add(ctx, "item/card/icon/075graveler");
-            add(ctx, "item/card/icon/075gravelershiny");
-            add(ctx, "item/card/icon/076golem");
-            add(ctx, "item/card/icon/076golemshiny");
-            add(ctx, "item/card/icon/077ponyta");
-            add(ctx, "item/card/icon/077ponytashiny");
-            add(ctx, "item/card/icon/078rapidash");
-            add(ctx, "item/card/icon/078rapidashshiny");
-            add(ctx, "item/card/icon/079slowpoke");
-            add(ctx, "item/card/icon/079slowpokeshiny");
-            add(ctx, "item/card/icon/080slowbro");
-            add(ctx, "item/card/icon/080slowbroshiny");
-            add(ctx, "item/card/icon/081magnemite");
-            add(ctx, "item/card/icon/081magnemiteshiny");
-            add(ctx, "item/card/icon/082magneton");
-            add(ctx, "item/card/icon/082magnetonshiny");
-            add(ctx, "item/card/icon/083farfetchd");
-            add(ctx, "item/card/icon/083farfetchdshiny");
-            add(ctx, "item/card/icon/084doduo");
-            add(ctx, "item/card/icon/084doduoshiny");
-            add(ctx, "item/card/icon/085dodrio");
-            add(ctx, "item/card/icon/085dodrioshiny");
-            add(ctx, "item/card/icon/086seel");
-            add(ctx, "item/card/icon/086seelshiny");
-            add(ctx, "item/card/icon/087dewgong");
-            add(ctx, "item/card/icon/087dewgongshiny");
-            add(ctx, "item/card/icon/088grimer");
-            add(ctx, "item/card/icon/088grimershiny");
-            add(ctx, "item/card/icon/089muk");
-            add(ctx, "item/card/icon/089mukshiny");
-            add(ctx, "item/card/icon/090shellder");
-            add(ctx, "item/card/icon/090shelldershiny");
-            add(ctx, "item/card/icon/091cloyster");
-            add(ctx, "item/card/icon/091cloystershiny");
-            add(ctx, "item/card/icon/092gastly");
-            add(ctx, "item/card/icon/092gastlyshiny");
-            add(ctx, "item/card/icon/093haunter");
-            add(ctx, "item/card/icon/093hauntershiny");
-            add(ctx, "item/card/icon/094gengar");
-            add(ctx, "item/card/icon/094gengarshiny");
-            add(ctx, "item/card/icon/095onix");
-            add(ctx, "item/card/icon/095onixshiny");
-            add(ctx, "item/card/icon/096drowzee");
-            add(ctx, "item/card/icon/096drowzeeshiny");
-            add(ctx, "item/card/icon/097hypno");
-            add(ctx, "item/card/icon/097hypnoshiny");
-            add(ctx, "item/card/icon/098krabby");
-            add(ctx, "item/card/icon/098krabbyshiny");
-            add(ctx, "item/card/icon/099kingler");
-            add(ctx, "item/card/icon/099kinglershiny");
-            add(ctx, "item/card/icon/100voltorb");
-            add(ctx, "item/card/icon/100voltorbshiny");
-            add(ctx, "item/card/icon/101electrode");
-            add(ctx, "item/card/icon/101electrodeshiny");
-            add(ctx, "item/card/icon/102exeggcute");
-            add(ctx, "item/card/icon/102exeggcuteshiny");
-            add(ctx, "item/card/icon/103exeggutor");
-            add(ctx, "item/card/icon/103exeggutorshiny");
-            add(ctx, "item/card/icon/104cubone");
-            add(ctx, "item/card/icon/104cuboneshiny");
-            add(ctx, "item/card/icon/105marowak");
-            add(ctx, "item/card/icon/105marowakshiny");
-            add(ctx, "item/card/icon/106hitmonlee");
-            add(ctx, "item/card/icon/106hitmonleeshiny");
-            add(ctx, "item/card/icon/107hitmonchan");
-            add(ctx, "item/card/icon/107hitmonchanshiny");
-            add(ctx, "item/card/icon/108lickitung");
-            add(ctx, "item/card/icon/108lickitungshiny");
-            add(ctx, "item/card/icon/109koffing");
-            add(ctx, "item/card/icon/109koffingshiny");
-            add(ctx, "item/card/icon/110weezing");
-            add(ctx, "item/card/icon/110weezingshiny");
-            add(ctx, "item/card/icon/111rhyhorn");
-            add(ctx, "item/card/icon/111rhyhornshiny");
-            add(ctx, "item/card/icon/112rhydon");
-            add(ctx, "item/card/icon/112rhydonshiny");
-            add(ctx, "item/card/icon/113chansey");
-            add(ctx, "item/card/icon/113chanseyshiny");
-            add(ctx, "item/card/icon/114tangela");
-            add(ctx, "item/card/icon/114tangelashiny");
-            add(ctx, "item/card/icon/115kangaskhan");
-            add(ctx, "item/card/icon/115kangaskhanshiny");
-            add(ctx, "item/card/icon/116horsea");
-            add(ctx, "item/card/icon/116horseashiny");
-            add(ctx, "item/card/icon/117seadra");
-            add(ctx, "item/card/icon/117seadrashiny");
-            add(ctx, "item/card/icon/118goldeen");
-            add(ctx, "item/card/icon/118goldeenshiny");
-            add(ctx, "item/card/icon/119seaking");
-            add(ctx, "item/card/icon/119seakingshiny");
-            add(ctx, "item/card/icon/120staryu");
-            add(ctx, "item/card/icon/120staryushiny");
-            add(ctx, "item/card/icon/121starmie");
-            add(ctx, "item/card/icon/121starmieshiny");
-            add(ctx, "item/card/icon/122mrmime");
-            add(ctx, "item/card/icon/122mrmimeshiny");
-            add(ctx, "item/card/icon/123scyther");
-            add(ctx, "item/card/icon/123scythershiny");
-            add(ctx, "item/card/icon/124jynx");
-            add(ctx, "item/card/icon/124jynxshiny");
-            add(ctx, "item/card/icon/125electabuzz");
-            add(ctx, "item/card/icon/125electabuzzshiny");
-            add(ctx, "item/card/icon/126magmar");
-            add(ctx, "item/card/icon/126magmarshiny");
-            add(ctx, "item/card/icon/127pinsir");
-            add(ctx, "item/card/icon/127pinsirshiny");
-            add(ctx, "item/card/icon/128tauros");
-            add(ctx, "item/card/icon/128taurosshiny");
-            add(ctx, "item/card/icon/129magikarp");
-            add(ctx, "item/card/icon/129magikarpshiny");
-            add(ctx, "item/card/icon/130gyarados");
-            add(ctx, "item/card/icon/130gyaradosshiny");
-            add(ctx, "item/card/icon/131lapras");
-            add(ctx, "item/card/icon/131laprasshiny");
-            add(ctx, "item/card/icon/132ditto");
-            add(ctx, "item/card/icon/132dittoshiny");
-            add(ctx, "item/card/icon/133eevee");
-            add(ctx, "item/card/icon/133eeveeshiny");
-            add(ctx, "item/card/icon/134vaporeon");
-            add(ctx, "item/card/icon/134vaporeonshiny");
-            add(ctx, "item/card/icon/135jolteon");
-            add(ctx, "item/card/icon/135jolteonshiny");
-            add(ctx, "item/card/icon/136flareon");
-            add(ctx, "item/card/icon/136flareonshiny");
-            add(ctx, "item/card/icon/137porygon");
-            add(ctx, "item/card/icon/137porygonshiny");
-            add(ctx, "item/card/icon/138omanyte");
-            add(ctx, "item/card/icon/138omanyteshiny");
-            add(ctx, "item/card/icon/139omastar");
-            add(ctx, "item/card/icon/139omastarshiny");
-            add(ctx, "item/card/icon/140kabuto");
-            add(ctx, "item/card/icon/140kabutoshiny");
-            add(ctx, "item/card/icon/141kabutops");
-            add(ctx, "item/card/icon/141kabutopsshiny");
-            add(ctx, "item/card/icon/142aerodactyl");
-            add(ctx, "item/card/icon/142aerodactylshiny");
-            add(ctx, "item/card/icon/143snorlax");
-            add(ctx, "item/card/icon/143snorlaxshiny");
-            add(ctx, "item/card/icon/144articuno");
-            add(ctx, "item/card/icon/144articunoshiny");
-            add(ctx, "item/card/icon/145zapdos");
-            add(ctx, "item/card/icon/145zapdosshiny");
-            add(ctx, "item/card/icon/146moltres");
-            add(ctx, "item/card/icon/146moltresshiny");
-            add(ctx, "item/card/icon/147dratini");
-            add(ctx, "item/card/icon/147dratinishiny");
-            add(ctx, "item/card/icon/148dragonair");
-            add(ctx, "item/card/icon/148dragonairshiny");
-            add(ctx, "item/card/icon/149dragonite");
-            add(ctx, "item/card/icon/149dragoniteshiny");
-            add(ctx, "item/card/icon/150mewtwo");
-            add(ctx, "item/card/icon/150mewtwoshiny");
-            add(ctx, "item/card/icon/151mew");
-            add(ctx, "item/card/icon/151mewshiny");
+            // Booster pack (si lo quieres forzar como extra)
+            addItem(ctx, "item/booster_pack");
 
-
-            // 👉 Aquí es donde vas a pegar TODAS las líneas generadas:
-            // add(ctx, "item/card/icon/004charmander");
-            // add(ctx, "item/card/icon/007squirtle");
-            // ...
+            // Icons
+            for (String id : CardIdIndex.allIds()) {
+                addItem(ctx, "item/card/icon/" + id);
+            }
         });
     }
 
-    private static void add(ModelLoadingPlugin.Context ctx, String path) {
+    /** Registra EXACTAMENTE el modelo que tu renderer pide: #inventory */
+    private static void addItem(ModelLoadingPlugin.Context ctx, String path) {
+        Identifier base = Identifier.of(Batcg.MOD_ID, path);
         ctx.addModels(Identifier.of(Batcg.MOD_ID, path));
     }
 }

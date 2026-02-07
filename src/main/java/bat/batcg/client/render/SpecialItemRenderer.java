@@ -17,6 +17,10 @@ import java.util.List;
 
 /**
  * Renderer base para dibujar modelos BAKED sin llamar ItemRenderer.renderItem (evita recursión).
+ *
+ * IMPORTANTE:
+ * En 1.21.1 los item models se hornean como ModelIdentifier con variante "#inventory".
+ * Si usas Identifier sin variante, te dará el missing model (morado/negro).
  */
 public abstract class SpecialItemRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer {
 
@@ -42,7 +46,14 @@ public abstract class SpecialItemRenderer implements BuiltinItemRendererRegistry
                                      Runnable afterTransformBeforeDraw) {
 
         MinecraftClient client = MinecraftClient.getInstance();
+
+        // ✅ ESTA ES LA CLAVE: usar "#inventory"
         BakedModel model = client.getBakedModelManager().getModel(modelId);
+
+        // Por seguridad: si por alguna razón algo saliera null, usar missing model
+        if (model == null) {
+            model = client.getBakedModelManager().getMissingModel();
+        }
 
         matrices.push();
 
@@ -50,7 +61,6 @@ public abstract class SpecialItemRenderer implements BuiltinItemRendererRegistry
             DiffuseLighting.disableGuiDepthLighting();
         }
 
-        // Aplicar transforms del modelo para este mode (como vanilla)
         matrices.translate(0.5F, 0.5F, 0.5F);
         model.getTransformation().getTransformation(mode).apply(leftHanded, matrices);
         matrices.translate(-0.5F, -0.5F, -0.5F);
@@ -73,7 +83,6 @@ public abstract class SpecialItemRenderer implements BuiltinItemRendererRegistry
                                          int light,
                                          int overlay) {
 
-        // Para items planos usamos el layer de item normal
         RenderLayer layer = RenderLayers.getItemLayer(stack, true);
 
         VertexConsumer vc = ItemRenderer.getDirectItemGlintConsumer(
@@ -100,7 +109,6 @@ public abstract class SpecialItemRenderer implements BuiltinItemRendererRegistry
         MatrixStack.Entry entry = matrices.peek();
 
         for (BakedQuad quad : quads) {
-            // ✅ Sin tint: blanco sólido (ideal para cartas)
             vertices.quad(entry, quad, 1f, 1f, 1f, 1f, light, overlay);
         }
     }
