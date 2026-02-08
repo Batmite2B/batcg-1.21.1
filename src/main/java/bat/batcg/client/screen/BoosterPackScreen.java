@@ -119,28 +119,20 @@ public class BoosterPackScreen extends Screen {
         ItemStack stack = PokemonCardItem.createCard(s.pokemonId, s.tier);
 
         // ✅ Escalado NO uniforme para que el render 16x16 llene w x h
-        float baseX = w / 16.0f;
-        float baseY = h / 16.0f;
+        float scale = Math.min(w, h) / 16.0f; // escala uniforme
 
-// ✅ Compensa márgenes internos del render GUI del item
-        float overscanX = 1.50f; // prueba 1.12–1.25 según te guste
-        float overscanY = 1.05f; // opcional (deja 1.0f si no quieres)
-
-        float scaleX = baseX * overscanX;
-        float scaleY = baseY * overscanY;
-
-// Queremos mantenerlo centrado dentro del slot
-        float drawW = 16.0f * scaleX;
-        float drawH = 16.0f * scaleY;
+        float drawW = 16.0f * scale;
+        float drawH = 16.0f * scale;
 
         float dx = x + (w - drawW) / 2.0f;
         float dy = y + (h - drawH) / 2.0f;
 
         ctx.getMatrices().push();
         ctx.getMatrices().translate(dx, dy, 300.0f);
-        ctx.getMatrices().scale(scaleX, scaleY, 1.0f);
+        ctx.getMatrices().scale(scale, scale, 1.0f);
         ctx.drawItem(stack, 0, 0);
         ctx.getMatrices().pop();
+
 
 
     }

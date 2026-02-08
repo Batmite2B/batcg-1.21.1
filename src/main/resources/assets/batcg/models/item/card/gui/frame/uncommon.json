@@ -1,0 +1,7 @@
+{
+  "parent": "batcg:item/card/gui/frame",
+  "textures": {
+    "0": "batcg:item/card/frame/uncommon",
+    "particle": "batcg:item/card/frame/uncommon"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "texture_size": [32, 32],
+  "gui_light": "front",
+  "ambientocclusion": false,
+  "render_type": "cutout",
+  "elements": [
+    {
+      "name": "icon_gui",
+      "shade": false,
+      "from": [1, 5, 1.002],
+      "to":   [9, 13, 1.002],
+      "faces": {
+        "north": { "uv": [0, 0, 16, 16], "texture": "#0" }
+      }
+    }
+  ]
+}

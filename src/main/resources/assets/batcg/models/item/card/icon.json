@@ -4,10 +4,10 @@
   "ambientocclusion": false,
   "render_type": "cutout",
 
-
   "elements": [
     {
       "name": "icon",
+      "shade": false,
       "from": [1, 5, 0.997],
       "to": [9, 13, 1.497],
       "rotation": {"angle": 0, "axis": "y", "origin": [1, 5, 1]},
@@ -16,6 +16,7 @@
       }
     }
   ],
+
   "display": {
     "thirdperson_righthand": {
       "rotation": [0, 90, 53],

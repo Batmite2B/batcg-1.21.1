@@ -8,6 +8,7 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
@@ -45,16 +46,22 @@ public abstract class SpecialItemRenderer implements BuiltinItemRendererRegistry
 
         MinecraftClient client = MinecraftClient.getInstance();
 
-        BakedModel model = client.getBakedModelManager().getModel(modelId);
-        if (model == null) model = client.getBakedModelManager().getMissingModel();
+        var manager = client.getBakedModelManager();
+
+
+
+        BakedModel model = manager.getModel(new ModelIdentifier(modelId, "inventory"));
+        if (model == manager.getMissingModel()) {
+            model = manager.getModel(modelId);
+        }
+
 
         boolean gui = (mode == ModelTransformationMode.GUI);
 
         matrices.push();
 
         if (gui) {
-            // GUI: lighting plana
-            DiffuseLighting.disableGuiDepthLighting();
+            DiffuseLighting.enableGuiDepthLighting();
         }
 
         matrices.translate(0.5F, 0.5F, 0.5F);
@@ -70,7 +77,7 @@ public abstract class SpecialItemRenderer implements BuiltinItemRendererRegistry
         renderBakedModel(model, stack, matrices, vertexConsumers, actualLight, overlay, gui);
 
         if (gui) {
-            DiffuseLighting.enableGuiDepthLighting();
+            DiffuseLighting.disableGuiDepthLighting();
         }
 
         matrices.pop();

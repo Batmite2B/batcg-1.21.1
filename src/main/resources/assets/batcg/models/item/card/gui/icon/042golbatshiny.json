@@ -1,0 +1,7 @@
+{
+  "parent": "batcg:item/card/gui/icon",
+  "textures": {
+    "0": "batcg:item/card/icon/042golbatshiny",
+    "particle": "batcg:item/card/icon/042golbatshiny"
+  }
+}
