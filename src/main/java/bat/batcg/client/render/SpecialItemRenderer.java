@@ -56,7 +56,7 @@ public abstract class SpecialItemRenderer implements BuiltinItemRendererRegistry
         }
 
 
-        boolean gui = (mode == ModelTransformationMode.GUI);
+        boolean gui = (mode == ModelTransformationMode.GUI || mode == ModelTransformationMode.NONE);
 
         matrices.push();
 

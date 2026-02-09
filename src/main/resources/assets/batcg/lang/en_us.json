@@ -151,5 +151,6 @@
   "pokemon.batcg.150mewtwo": "Mewtwo",
   "pokemon.batcg.151mew": "Mew",
 
-  "item.batcg.pokemoncard": "Card"
+  "item.batcg.pokemoncard": "Card",
+  "item.batcg.booster_pack": "Booster Pack"
 }

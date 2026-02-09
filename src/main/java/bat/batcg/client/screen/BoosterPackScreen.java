@@ -11,9 +11,14 @@ import net.minecraft.util.Identifier;
 
 public class BoosterPackScreen extends Screen {
 
-    // Texturas (opcionales)
     private static final Identifier BG = Identifier.of("batcg", "textures/gui/booster_bg.png");
     private static final Identifier CARD_BACK = Identifier.of("batcg", "textures/gui/card_back.png");
+
+    // ✅ tamaño REAL del PNG de card_back
+    private static final int CARD_BACK_TEX_W = 48;
+    private static final int CARD_BACK_TEX_H = 64;
+
+
 
     private final int handOrdinal;
     private int revealedMask;
@@ -22,12 +27,10 @@ public class BoosterPackScreen extends Screen {
             new SlotState(), new SlotState(), new SlotState()
     };
 
-    // ✅ UI settings (ajusta a gusto)
     private static final int SLOT_W = 72;
     private static final int SLOT_H = 96;
     private static final int GAP = 12;
 
-    // Guardamos posiciones para clicks
     private int startX;
     private int startY;
 
@@ -37,10 +40,6 @@ public class BoosterPackScreen extends Screen {
         this.revealedMask = revealedMask;
     }
 
-    /**
-     * Llamado desde el networking cuando el server confirma reveal.
-     * newMask viene del server para evitar double-reveals.
-     */
     public void applyRevealFromServer(int slot, String pokemonId, String tierName, int newMask) {
         if (slot < 0 || slot > 2) return;
 
@@ -62,11 +61,9 @@ public class BoosterPackScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-
         for (int i = 0; i < 3; i++) {
             slots[i].revealed = ((revealedMask & (1 << i)) != 0);
         }
-
         recalcLayout();
     }
 
@@ -78,16 +75,8 @@ public class BoosterPackScreen extends Screen {
 
     @Override
     public void render(DrawContext ctx, int mouseX, int mouseY, float delta) {
-        // Fondo SIN blur (solo oscurece)
         ctx.fill(0, 0, this.width, this.height, 0xB0000000);
-
-        // Si la ventana cambia, recalcular (seguro)
         recalcLayout();
-
-        // (Opcional) si luego quieres un panel BG 256x160 centrado:
-        // int cx = this.width / 2;
-        // int cy = this.height / 2;
-        // ctx.drawTexture(BG, cx - 128, cy - 80, 0, 0, 256, 160, 256, 160);
 
         for (int i = 0; i < 3; i++) {
             int x = startX + i * (SLOT_W + GAP);
@@ -100,59 +89,64 @@ public class BoosterPackScreen extends Screen {
         return false;
     }
 
+
+
     private void drawCardSlot(DrawContext ctx, int x, int y, int w, int h, int slot) {
         SlotState s = slots[slot];
 
-        // No revelado → back
-        if (!s.revealed) {
+        boolean revealed = s.revealed && s.pokemonId != null && s.tier != null;
+
+        // --- BACK (sin overscan, NO tilea) ---
+        if (!revealed) {
+            // Clave: textureWidth/Height = width/height para evitar repetición
             ctx.drawTexture(CARD_BACK, x, y, 0, 0, w, h, w, h);
             return;
         }
 
-        // Revelado pero sin data aún → back placeholder
-        if (s.pokemonId == null || s.tier == null) {
-            ctx.drawTexture(CARD_BACK, x, y, 0, 0, w, h, w, h);
-            return;
-        }
-
-        // Carta real
+        // --- FRONT (tu overscan perfecto) ---
         ItemStack stack = PokemonCardItem.createCard(s.pokemonId, s.tier);
 
-        // ✅ Escalado NO uniforme para que el render 16x16 llene w x h
-        float scale = Math.min(w, h) / 16.0f; // escala uniforme
+        float baseX = w / 16.0f;
+        float baseY = h / 16.0f;
 
-        float drawW = 16.0f * scale;
-        float drawH = 16.0f * scale;
+        float overscanX = 1.30f; // ✅ tu valor perfecto
+        float overscanY = 1.0f;
+
+        float scaleX = baseX * overscanX;
+        float scaleY = baseY * overscanY;
+
+        float drawW = 16.0f * scaleX;
+        float drawH = 16.0f * scaleY;
 
         float dx = x + (w - drawW) / 2.0f;
         float dy = y + (h - drawH) / 2.0f;
 
         ctx.getMatrices().push();
         ctx.getMatrices().translate(dx, dy, 300.0f);
-        ctx.getMatrices().scale(scale, scale, 1.0f);
+        ctx.getMatrices().scale(scaleX, scaleY, 1.0f);
         ctx.drawItem(stack, 0, 0);
         ctx.getMatrices().pop();
-
-
-
     }
+
+
+
+
+
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button != 0) return super.mouseClicked(mouseX, mouseY, button);
 
-        // Hitboxes basados en el layout real (mismos tamaños y posiciones)
         for (int i = 0; i < 3; i++) {
             int x = startX + i * (SLOT_W + GAP);
             int y = startY;
 
             if (inside(mouseX, mouseY, x, y, SLOT_W, SLOT_H)) {
-                if ((revealedMask & (1 << i)) != 0) return true; // ya revelada
+                if ((revealedMask & (1 << i)) != 0) return true;
                 ClientBoosterNetworking.requestReveal(handOrdinal, i);
                 return true;
             }
         }
-
         return super.mouseClicked(mouseX, mouseY, button);
     }
 

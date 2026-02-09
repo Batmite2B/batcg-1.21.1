@@ -28,6 +28,9 @@ public final class BatcgModelLoading {
             for (String id : CardIdIndex.allIds()) {
                 addItem(ctx, "item/card/icon/" + id);
             }
+
+
+
         });
     }
 
