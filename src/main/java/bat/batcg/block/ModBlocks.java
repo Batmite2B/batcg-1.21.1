@@ -10,6 +10,8 @@ import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
+import bat.batcg.item.PokedollarBlockItem;
+
 
 public class ModBlocks {
 
@@ -22,9 +24,17 @@ public class ModBlocks {
 
     private static Block registerBlock(String name, Block block) {
         Registry.register(Registries.BLOCK, Identifier.of(Batcg.MOD_ID, name), block);
-        Registry.register(Registries.ITEM, Identifier.of(Batcg.MOD_ID, name), new BlockItem(block, new Item.Settings()));
+
+        // ✅ Usa el parámetro 'block', NO la variable estática
+        Registry.register(Registries.ITEM, Identifier.of(Batcg.MOD_ID, name),
+                name.equals("pokedollar")
+                        ? new PokedollarBlockItem(block, new Item.Settings())
+                        : new BlockItem(block, new Item.Settings())
+        );
+
         return block;
     }
+
 
     public static void RegisterModBlocks() {
         Batcg.LOGGER.info("Registering Mod Blocks for " + Batcg.MOD_ID);
