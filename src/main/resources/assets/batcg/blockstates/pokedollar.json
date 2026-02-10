@@ -1,0 +1,83 @@
+{
+  "variants": {
+    "facing=north,layers=1": { "model": "batcg:block/pokedollar_1" },
+    "facing=east,layers=1":  { "model": "batcg:block/pokedollar_1", "y": 90 },
+    "facing=south,layers=1": { "model": "batcg:block/pokedollar_1", "y": 180 },
+    "facing=west,layers=1":  { "model": "batcg:block/pokedollar_1", "y": 270 },
+
+    "facing=north,layers=2": { "model": "batcg:block/pokedollar_2" },
+    "facing=east,layers=2":  { "model": "batcg:block/pokedollar_2", "y": 90 },
+    "facing=south,layers=2": { "model": "batcg:block/pokedollar_2", "y": 180 },
+    "facing=west,layers=2":  { "model": "batcg:block/pokedollar_2", "y": 270 },
+
+    "facing=north,layers=3": { "model": "batcg:block/pokedollar_3" },
+    "facing=east,layers=3":  { "model": "batcg:block/pokedollar_3", "y": 90 },
+    "facing=south,layers=3": { "model": "batcg:block/pokedollar_3", "y": 180 },
+    "facing=west,layers=3":  { "model": "batcg:block/pokedollar_3", "y": 270 },
+
+    "facing=north,layers=4": { "model": "batcg:block/pokedollar_4" },
+    "facing=east,layers=4":  { "model": "batcg:block/pokedollar_4", "y": 90 },
+    "facing=south,layers=4": { "model": "batcg:block/pokedollar_4", "y": 180 },
+    "facing=west,layers=4":  { "model": "batcg:block/pokedollar_4", "y": 270 },
+
+    "facing=north,layers=5": { "model": "batcg:block/pokedollar_5" },
+    "facing=east,layers=5":  { "model": "batcg:block/pokedollar_5", "y": 90 },
+    "facing=south,layers=5": { "model": "batcg:block/pokedollar_5", "y": 180 },
+    "facing=west,layers=5":  { "model": "batcg:block/pokedollar_5", "y": 270 },
+
+    "facing=north,layers=6": { "model": "batcg:block/pokedollar_6" },
+    "facing=east,layers=6":  { "model": "batcg:block/pokedollar_6", "y": 90 },
+    "facing=south,layers=6": { "model": "batcg:block/pokedollar_6", "y": 180 },
+    "facing=west,layers=6":  { "model": "batcg:block/pokedollar_6", "y": 270 },
+
+    "facing=north,layers=7": { "model": "batcg:block/pokedollar_7" },
+    "facing=east,layers=7":  { "model": "batcg:block/pokedollar_7", "y": 90 },
+    "facing=south,layers=7": { "model": "batcg:block/pokedollar_7", "y": 180 },
+    "facing=west,layers=7":  { "model": "batcg:block/pokedollar_7", "y": 270 },
+
+    "facing=north,layers=8": { "model": "batcg:block/pokedollar_8" },
+    "facing=east,layers=8":  { "model": "batcg:block/pokedollar_8", "y": 90 },
+    "facing=south,layers=8": { "model": "batcg:block/pokedollar_8", "y": 180 },
+    "facing=west,layers=8":  { "model": "batcg:block/pokedollar_8", "y": 270 },
+
+    "facing=north,layers=9": { "model": "batcg:block/pokedollar_9" },
+    "facing=east,layers=9":  { "model": "batcg:block/pokedollar_9", "y": 90 },
+    "facing=south,layers=9": { "model": "batcg:block/pokedollar_9", "y": 180 },
+    "facing=west,layers=9":  { "model": "batcg:block/pokedollar_9", "y": 270 },
+
+    "facing=north,layers=10": { "model": "batcg:block/pokedollar_10" },
+    "facing=east,layers=10":  { "model": "batcg:block/pokedollar_10", "y": 90 },
+    "facing=south,layers=10": { "model": "batcg:block/pokedollar_10", "y": 180 },
+    "facing=west,layers=10":  { "model": "batcg:block/pokedollar_10", "y": 270 },
+
+    "facing=north,layers=11": { "model": "batcg:block/pokedollar_11" },
+    "facing=east,layers=11":  { "model": "batcg:block/pokedollar_11", "y": 90 },
+    "facing=south,layers=11": { "model": "batcg:block/pokedollar_11", "y": 180 },
+    "facing=west,layers=11":  { "model": "batcg:block/pokedollar_11", "y": 270 },
+
+    "facing=north,layers=12": { "model": "batcg:block/pokedollar_12" },
+    "facing=east,layers=12":  { "model": "batcg:block/pokedollar_12", "y": 90 },
+    "facing=south,layers=12": { "model": "batcg:block/pokedollar_12", "y": 180 },
+    "facing=west,layers=12":  { "model": "batcg:block/pokedollar_12", "y": 270 },
+
+    "facing=north,layers=13": { "model": "batcg:block/pokedollar_13" },
+    "facing=east,layers=13":  { "model": "batcg:block/pokedollar_13", "y": 90 },
+    "facing=south,layers=13": { "model": "batcg:block/pokedollar_13", "y": 180 },
+    "facing=west,layers=13":  { "model": "batcg:block/pokedollar_13", "y": 270 },
+
+    "facing=north,layers=14": { "model": "batcg:block/pokedollar_14" },
+    "facing=east,layers=14":  { "model": "batcg:block/pokedollar_14", "y": 90 },
+    "facing=south,layers=14": { "model": "batcg:block/pokedollar_14", "y": 180 },
+    "facing=west,layers=14":  { "model": "batcg:block/pokedollar_14", "y": 270 },
+
+    "facing=north,layers=15": { "model": "batcg:block/pokedollar_15" },
+    "facing=east,layers=15":  { "model": "batcg:block/pokedollar_15", "y": 90 },
+    "facing=south,layers=15": { "model": "batcg:block/pokedollar_15", "y": 180 },
+    "facing=west,layers=15":  { "model": "batcg:block/pokedollar_15", "y": 270 },
+
+    "facing=north,layers=16": { "model": "batcg:block/pokedollar_16" },
+    "facing=east,layers=16":  { "model": "batcg:block/pokedollar_16", "y": 90 },
+    "facing=south,layers=16": { "model": "batcg:block/pokedollar_16", "y": 180 },
+    "facing=west,layers=16":  { "model": "batcg:block/pokedollar_16", "y": 270 }
+  }
+}

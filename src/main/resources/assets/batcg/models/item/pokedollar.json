@@ -1,0 +1,36 @@
+{
+  "parent": "batcg:block/pokedollar_1",
+  "gui_light": "front",
+
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [-30, 0, 0],
+      "translation": [0, 4.25, -0.5],
+      "scale": [0.55, 0.55, 0.55]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [-30, 0, 0],
+      "translation": [0, 4.25, -0.5],
+      "scale": [0.55, 0.55, 0.55]
+    },
+    "firstperson_righthand": {
+      "rotation": [75, -180, 4],
+      "translation": [-3, 7, 10],
+      "scale": [0.68, 0.68, 0.68]
+    },
+    "firstperson_lefthand": {
+      "rotation": [75, -180, 4],
+      "translation": [-3, 7, 10],
+      "scale": [0.68, 0.68, 0.68]
+    },
+    "ground": {
+      "translation": [0, 6, 0],
+      "scale": [0.55, 0.55, 0.55]
+    },
+    "gui": {
+      "rotation": [-103.31, 25.94, -179.25],
+      "translation": [0.25, 6.75, 0],
+      "scale": [1.45, 4, 1.45]
+    }
+  }
+}

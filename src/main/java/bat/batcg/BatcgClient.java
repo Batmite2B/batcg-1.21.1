@@ -10,6 +10,10 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.minecraft.client.MinecraftClient;
+import bat.batcg.block.ModBlocks;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.minecraft.client.render.RenderLayer;
+
 
 public class BatcgClient implements ClientModInitializer {
 
@@ -17,6 +21,10 @@ public class BatcgClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+
+
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.POKEDOLLAR, RenderLayer.getCutout());
+
 
         // ✅ 1) Registrar TODOS los modelos extra (frames + icons)
         BatcgModelLoading.init();
