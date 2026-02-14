@@ -15,6 +15,9 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import net.minecraft.advancement.criterion.Criteria;
+import net.minecraft.server.network.ServerPlayerEntity;
+
 
 public class PokedollarBlockItem extends BlockItem {
 
@@ -91,6 +94,13 @@ public class PokedollarBlockItem extends BlockItem {
 
         if (!world.isClient) {
             world.setBlockState(pos, newState, Block.NOTIFY_ALL);
+            // ✅ Dispara el trigger vanilla para que funcione el advancement (placed_block)
+            if (ctx.getPlayer() instanceof ServerPlayerEntity sp) {
+                ItemStack used = ctx.getStack().copy();
+                used.setCount(1); // el criterio espera el item usado, no importa el count real
+                Criteria.PLACED_BLOCK.trigger(sp, pos, used);
+            }
+
 
             if (!creative) ctx.getStack().decrement(add);
 

@@ -20,12 +20,33 @@ public class PokemonCardItem extends Item {
 
     public static ItemStack createCard(String pokemonId, CardTier tier) {
         ItemStack stack = new ItemStack(ModItems.POKEMONCARD);
-        stack.set(ModCardComponents.POKEMON_ID, pokemonId.toLowerCase(Locale.ROOT));
-        stack.set(ModCardComponents.CARD_TIER, tier.name());
+        if (pokemonId != null) {
+            stack.set(ModCardComponents.POKEMON_ID, pokemonId.toLowerCase(Locale.ROOT));
+        }
+        stack.set(ModCardComponents.CARD_TIER, (tier == null ? CardTier.COMMON : tier).name());
         return stack;
     }
 
-    // ✅ Nombre del item: color por rareza + estrella si SHINY
+
+    public static String getPokemonId(ItemStack stack) {
+        String id = stack.get(ModCardComponents.POKEMON_ID);
+        return id == null ? "" : id;
+    }
+
+    public static CardTier getTier(ItemStack stack) {
+        String tierName = stack.get(ModCardComponents.CARD_TIER);
+        if (tierName == null || tierName.isBlank()) return CardTier.COMMON;
+
+        try {
+            return CardTier.valueOf(tierName.trim().toUpperCase(java.util.Locale.ROOT));
+        } catch (Exception ignored) {
+            return CardTier.COMMON;
+        }
+    }
+
+
+
+
     @Override
     public Text getName(ItemStack stack) {
         String pokemonId = stack.get(ModCardComponents.POKEMON_ID);
@@ -39,7 +60,7 @@ public class PokemonCardItem extends Item {
 
         MutableText name = getPokemonNameText(pokemonId).copy().formatted(tier.getColor());
 
-        // ⭐ Solo para SHINY (sin "(Shiny)")
+        // ⭐ solo para SHINY
         if (tier == CardTier.SHINY) {
             return Text.literal("★ ").formatted(Formatting.GOLD).append(name);
         }
@@ -47,7 +68,7 @@ public class PokemonCardItem extends Item {
         return name;
     }
 
-    // ✅ Tooltip SIN nombre (solo rareza)
+    // ✅ OJO: TooltipContext viene de Item (nested), NO se importa.
     @Override
     public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         String tierName = stack.get(ModCardComponents.CARD_TIER);
@@ -63,12 +84,6 @@ public class PokemonCardItem extends Item {
                 Text.literal("Rarity: ").formatted(Formatting.DARK_GRAY)
                         .append(Text.literal(tier.getDisplayName()).formatted(tier.getColor()))
         );
-
-        // (Opcional) Si quieres depurar IDs, descomenta:
-        // String pokemonId = stack.get(ModCardComponents.POKEMON_ID);
-        // if (pokemonId != null && !pokemonId.isBlank()) {
-        //     tooltip.add(Text.literal(pokemonId).formatted(Formatting.DARK_GRAY));
-        // }
     }
 
     // -------------------------
@@ -84,12 +99,6 @@ public class PokemonCardItem extends Item {
         }
     }
 
-    /**
-     * Nombre del Pokémon:
-     * - Usa traducción si existe: "pokemon.batcg.<id>"
-     * - Si no existe, fallback: "001bulbasaur" -> "Bulbasaur"
-     * - Si el id termina en "shiny", usa el baseId (sin shiny)
-     */
     private static MutableText getPokemonNameText(String pokemonId) {
         String clean = pokemonId.toLowerCase(Locale.ROOT).trim();
 
@@ -97,7 +106,6 @@ public class PokemonCardItem extends Item {
         String baseId = shiny ? clean.substring(0, clean.length() - "shiny".length()) : clean;
 
         String key = "pokemon.batcg." + baseId;
-
         MutableText name = Text.translatable(key);
 
         // fallback si no existe traducción

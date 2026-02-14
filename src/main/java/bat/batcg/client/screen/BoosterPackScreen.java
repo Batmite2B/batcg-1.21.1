@@ -57,6 +57,7 @@ public class BoosterPackScreen extends Screen {
 
     @Override
     protected void init() {
+
         super.init();
         recalcLayout();
 

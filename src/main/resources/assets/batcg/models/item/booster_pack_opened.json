@@ -1,0 +1,5 @@
+{
+  "parent": "batcg:item/booster_pack",
+  "gui_light": "front",
+  "ambientocclusion": false
+}

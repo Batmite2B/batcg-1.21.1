@@ -1,6 +1,7 @@
 package bat.batcg.item;
 
 import bat.batcg.Batcg;
+import bat.batcg.block.PokedollarBlock;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
@@ -15,10 +16,19 @@ public class ModItems {
             registerItem("pokemoncard", new PokemonCardItem(new Item.Settings().maxCount(1)));
 
 
+
+
+
     public static final Item BOOSTER_PACK = registerItem(
             "booster_pack",
+            new SealedBoosterPackItem(new Item.Settings().maxCount(16))
+    );
+
+    public static final Item BOOSTER_PACK_OPENED = registerItem(
+            "booster_pack_opened",
             new BoosterPackItem(new Item.Settings().maxCount(1))
     );
+
 
 
     private static Item registerItem(String name, Item item) {
@@ -30,6 +40,18 @@ public class ModItems {
 
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS).register(entries -> {
             entries.add(POKEMONCARD);
+            entries.add(BOOSTER_PACK);
+
+
+
         });
     }
+
+    public static final Item CARD_BELT = registerItem(
+            "card_belt",
+            new CardBeltItem(new Item.Settings().maxCount(1))
+    );
+
+
+
 }

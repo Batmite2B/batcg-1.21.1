@@ -3,10 +3,14 @@ package bat.batcg;
 import bat.batcg.card.ModBoosterComponents;
 import bat.batcg.card.ModCardComponents;
 import bat.batcg.command.ModCommands;
+import bat.batcg.belt.BeltHooks;
+import bat.batcg.belt.ModBeltComponents;
 import bat.batcg.item.ModItems;
 import bat.batcg.network.BatcgPackets;
+import bat.batcg.screen.ModScreenHandlers;
 import net.fabricmc.api.ModInitializer;
 import bat.batcg.block.ModBlocks;
+import bat.batcg.screen.ModScreenHandlers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +31,12 @@ public class Batcg implements ModInitializer {
 		ModBoosterComponents.initialize();
 		BatcgPackets.registerPayloads();
 		BatcgPackets.initServerReceivers();
+		BeltHooks.init();
 		ModBlocks.RegisterModBlocks();
+		ModBeltComponents.initialize();
+		ModScreenHandlers.init();
+
+
 
 
 

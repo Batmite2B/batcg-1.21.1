@@ -4,14 +4,15 @@ import bat.batcg.Batcg;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class CardIdIndex {
 
-    private static volatile List<String> ALL_IDS; // sorted lowercase
+    private static volatile List<String> ALL_IDS;   // sorted lowercase
     private static volatile List<String> NORMAL_IDS;
     private static volatile List<String> SHINY_IDS;
 
@@ -19,10 +20,62 @@ public final class CardIdIndex {
 
     // --- Compat con tu ModCommands ---
     public static List<String> all() { return allIds(); }
+
     public static boolean exists(String id) { return isValid(id); }
+
+    /**
+     * Normaliza inputs tipo:
+     * - "60Poliwag" -> "060poliwag"
+     * - "060Poliwag.json" -> "060poliwag"
+     * - "001bulbasaurShiny" -> "001bulbasaurshiny"
+     * - "bulbasaur" -> intenta resolver si hay match único
+     */
     public static String normalize(String raw) {
         if (raw == null) return "";
-        return raw.toLowerCase(Locale.ROOT).trim();
+        String s = raw.trim().toLowerCase(Locale.ROOT);
+
+        // strip extensions
+        if (s.endsWith(".json")) s = s.substring(0, s.length() - 5);
+        if (s.endsWith(".png"))  s = s.substring(0, s.length() - 4);
+
+        // basic cleanup
+        s = s.replace(" ", "")
+                .replace("_", "")
+                .replace("-", "");
+
+        // pad dex if starts with 1-3 digits
+        int i = 0;
+        while (i < s.length() && Character.isDigit(s.charAt(i)) && i < 3) i++;
+        if (i > 0) {
+            String num = s.substring(0, i);
+            String rest = s.substring(i);
+            num = String.format(Locale.ROOT, "%03d", Integer.parseInt(num));
+            s = num + rest;
+            return s;
+        }
+
+        // If user typed only a name (no leading digits), try to resolve uniquely.
+        ensureLoaded();
+        String candidate = s;
+
+        // exact match
+        if (Collections.binarySearch(ALL_IDS, candidate) >= 0) return candidate;
+
+        // unique suffix match (e.g. "bulbasaur" matches "001bulbasaur")
+        List<String> matches = ALL_IDS.stream()
+                .filter(id -> id.endsWith(candidate))
+                .collect(Collectors.toList());
+
+        if (matches.size() == 1) return matches.get(0);
+
+        // also try shiny suffix
+        matches = ALL_IDS.stream()
+                .filter(id -> id.endsWith(candidate + "shiny"))
+                .collect(Collectors.toList());
+
+        if (matches.size() == 1) return matches.get(0);
+
+        return candidate; // fallback
     }
     // -------------------------------
 
@@ -46,6 +99,24 @@ public final class CardIdIndex {
         ensureLoaded();
         String n = normalize(id);
         return Collections.binarySearch(ALL_IDS, n) >= 0;
+    }
+
+    /**
+     * "060poliwag" -> 60
+     * "1bulbasaur" -> 1
+     * "bulbasaur"  -> -1
+     */
+    public static int dexNumber(String pokemonId) {
+        if (pokemonId == null || pokemonId.isBlank()) return -1;
+        String s = pokemonId.trim();
+        int end = 0;
+        while (end < s.length() && Character.isDigit(s.charAt(end)) && end < 3) end++;
+        if (end == 0) return -1;
+        try {
+            return Integer.parseInt(s.substring(0, end));
+        } catch (Exception ignored) {
+            return -1;
+        }
     }
 
     private static void ensureLoaded() {

@@ -1,6 +1,5 @@
 package bat.batcg.item;
 
-import bat.batcg.card.CardIdIndex;
 import bat.batcg.card.CardTier;
 import bat.batcg.card.ModBoosterComponents;
 import bat.batcg.network.payload.OpenBoosterS2CPayload;
@@ -12,10 +11,9 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
-
-import java.util.List;
-import java.util.Locale;
 import java.util.Random;
+import bat.batcg.card.PokemonRarityTable;
+
 
 public class BoosterPackItem extends Item {
 
@@ -27,24 +25,77 @@ public class BoosterPackItem extends Item {
 
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        ItemStack stack = user.getStackInHand(hand);
 
         if (!world.isClient && user instanceof ServerPlayerEntity sp) {
+
+            // ✅ CLAVE: si viene de un stack, separar 1 booster a la mano
+            ItemStack stack = ensureSingleInHand(sp, hand);
+
             ensureSeed(stack, world.random.nextLong());
 
             int mask = stack.getOrDefault(ModBoosterComponents.BOOSTER_REVEALED, 0);
             ServerPlayNetworking.send(sp, new OpenBoosterS2CPayload(hand.ordinal(), mask));
+
+            return TypedActionResult.success(stack, false);
         }
 
-        return TypedActionResult.success(stack, world.isClient);
+        return TypedActionResult.success(user.getStackInHand(hand), true);
     }
 
-    public void ensureSeed(ItemStack stack, long seed) {
-        if (stack.get(ModBoosterComponents.BOOSTER_SEED) == null) {
+
+    public static void ensureSeed(ItemStack stack, long seed) {
+        if (!stack.contains(ModBoosterComponents.BOOSTER_SEED)) {
             stack.set(ModBoosterComponents.BOOSTER_SEED, seed);
+        }
+        if (!stack.contains(ModBoosterComponents.BOOSTER_REVEALED)) {
             stack.set(ModBoosterComponents.BOOSTER_REVEALED, 0);
         }
     }
+
+    public static void clearBoosterData(ItemStack stack) {
+        stack.remove(ModBoosterComponents.BOOSTER_SEED);
+        stack.remove(ModBoosterComponents.BOOSTER_REVEALED);
+
+        stack.remove(ModBoosterComponents.BOOSTER_ID0);
+        stack.remove(ModBoosterComponents.BOOSTER_ID1);
+        stack.remove(ModBoosterComponents.BOOSTER_ID2);
+
+        stack.remove(ModBoosterComponents.BOOSTER_TIER0);
+        stack.remove(ModBoosterComponents.BOOSTER_TIER1);
+        stack.remove(ModBoosterComponents.BOOSTER_TIER2);
+    }
+
+
+    /**
+     * Si el jugador tiene un stack (count>1) en la mano,
+     * separa 1 item a la mano y manda el resto al inventario limpio.
+     * El booster "en mano" mantiene su data (si ya estaba abierto) para no perder progreso.
+     */
+    public static ItemStack ensureSingleInHand(PlayerEntity player, Hand hand) {
+        ItemStack handStack = player.getStackInHand(hand);
+        if (handStack.getCount() <= 1) return handStack;
+
+        // Booster que se va a usar (conserva data si la tenía)
+        ItemStack single = handStack.copy();
+        single.setCount(1);
+
+        // Resto del stack (se limpia para que sean boosters nuevos)
+        ItemStack remainder = handStack.copy();
+        remainder.setCount(handStack.getCount() - 1);
+        clearBoosterData(remainder);
+
+        // Reemplazar mano por el single
+        player.setStackInHand(hand, single);
+
+        // Intentar guardar el resto en inventario, si no cabe lo tiramos
+        if (!player.getInventory().insertStack(remainder)) {
+            player.dropItem(remainder, false);
+        }
+
+        return single;
+    }
+
+
 
     public RevealResult reveal(ItemStack boosterStack, int slot) {
         int mask = boosterStack.getOrDefault(ModBoosterComponents.BOOSTER_REVEALED, 0);
@@ -57,10 +108,17 @@ public class BoosterPackItem extends Item {
 
         CardTier tier = rollTier(rng);
 
-        List<String> pool = (tier == CardTier.SHINY) ? CardIdIndex.shinyIds() : CardIdIndex.normalIds();
-        if (pool.isEmpty()) return null;
+        String pokemonId = bat.batcg.card.PokemonRarityTable.pickPokemonId(rng, tier);
+        if (pokemonId == null) return null;
 
-        String pokemonId = pool.get(rng.nextInt(pool.size())).toLowerCase(Locale.ROOT);
+
+
+
+        bat.batcg.Batcg.LOGGER.info("[BATCG] slot={} rolledTier={} picked={} assignedTier={}",
+                slot, tier, pokemonId, bat.batcg.card.PokemonRarityTable.getAssignedTier(pokemonId));
+
+
+
 
         switch (slot) {
             case 0 -> {

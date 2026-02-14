@@ -1,0 +1,16 @@
+{
+  "parent": "minecraft:story/root",
+  "display": {
+    "icon": { "item": "batcg:pokedollar" },
+    "title": { "text": "¡Pila completa de Pokédollars!" },
+    "description": { "text": "Junta una pila de 16 monedas en el suelo." },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "full_stack": { "trigger": "minecraft:impossible" }
+  },
+  "rewards": { "experience": 50 }
+}
