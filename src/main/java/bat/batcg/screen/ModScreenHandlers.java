@@ -8,7 +8,6 @@ import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
 
 public final class ModScreenHandlers {
-    private ModScreenHandlers() {}
 
     public static final ScreenHandlerType<BeltScreenHandler> BELT =
             Registry.register(
@@ -17,5 +16,10 @@ public final class ModScreenHandlers {
                     new ScreenHandlerType<>(BeltScreenHandler::new, FeatureFlags.VANILLA_FEATURES)
             );
 
-    public static void init() {}
+    private ModScreenHandlers() {}
+
+    /** Llamar desde Batcg.onInitialize() */
+    public static void init() {
+        // solo para forzar carga/registro
+    }
 }

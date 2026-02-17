@@ -9,23 +9,36 @@ import net.minecraft.util.Identifier;
 
 public final class ModCardComponents {
 
+    private static boolean INITIALIZED = false;
+
+    public static ComponentType<String> POKEMON_ID;
+    public static ComponentType<String> CARD_TIER;
+
     private ModCardComponents() {}
 
-    public static final ComponentType<String> POKEMON_ID =
-            Registry.register(
-                    Registries.DATA_COMPONENT_TYPE,
-                    Identifier.of(Batcg.MOD_ID, "pokemon_id"),
-                    ComponentType.<String>builder().codec(Codec.STRING).build()
-            );
-
-    public static final ComponentType<String> CARD_TIER =
-            Registry.register(
-                    Registries.DATA_COMPONENT_TYPE,
-                    Identifier.of(Batcg.MOD_ID, "card_tier"),
-                    ComponentType.<String>builder().codec(Codec.STRING).build()
-            );
-
     public static void initialize() {
-        // Intentionally empty: class-load registers the types.
+        if (INITIALIZED) return;
+        INITIALIZED = true;
+
+        POKEMON_ID = register("pokemon_id", Codec.STRING);
+        CARD_TIER  = register("card_tier",  Codec.STRING);
+    }
+
+    /** Útil para fallar con un error claro si algo se usa antes del init. */
+    public static void ensureInitialized() {
+        if (!INITIALIZED || POKEMON_ID == null || CARD_TIER == null) {
+            throw new IllegalStateException(
+                    "ModCardComponents not initialized. " +
+                            "Call ModCardComponents.initialize() in Batcg#onInitialize (before registries freeze)."
+            );
+        }
+    }
+
+    private static <T> ComponentType<T> register(String name, Codec<T> codec) {
+        return Registry.register(
+                Registries.DATA_COMPONENT_TYPE,
+                Identifier.of(Batcg.MOD_ID, name),
+                ComponentType.<T>builder().codec(codec).build()
+        );
     }
 }

@@ -2,6 +2,7 @@ package bat.batcg.screen;
 
 import bat.batcg.belt.BeltCards;
 import bat.batcg.card.CardTier;
+import bat.batcg.card.ModCardComponents;
 import bat.batcg.item.PokemonCardItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
@@ -28,8 +29,7 @@ public class BeltCardInventory implements Inventory {
 
     @Override public int size() { return stacks.size(); }
 
-    @Override
-    public boolean isEmpty() {
+    @Override public boolean isEmpty() {
         for (ItemStack s : stacks) if (!s.isEmpty()) return false;
         return true;
     }
@@ -69,6 +69,9 @@ public class BeltCardInventory implements Inventory {
 
     @Override
     public void markDirty() {
+        // Si el belt no existe (por seguridad), NO borres nada.
+        if (beltStack == null || beltStack.isEmpty()) return;
+
         for (int i = 0; i < BeltCards.SLOTS; i++) {
             ItemStack s = stacks.get(i);
 
@@ -77,15 +80,29 @@ public class BeltCardInventory implements Inventory {
                 continue;
             }
 
+            // Solo aceptamos cartas
             if (!(s.getItem() instanceof PokemonCardItem)) {
                 BeltCards.clear(beltStack, i);
                 continue;
             }
 
-            String id = PokemonCardItem.getPokemonId(s);
-            CardTier tier = PokemonCardItem.getTier(s);
+            // ✅ LEER DESDE DATA COMPONENTS (esto arregla tu bug)
+            String id = s.getOrDefault(ModCardComponents.POKEMON_ID, "");
+            String tierName = s.getOrDefault(ModCardComponents.CARD_TIER, "");
 
-            if (id == null || id.isBlank() || tier == null) {
+            if (id.isBlank() || tierName.isBlank()) {
+                BeltCards.clear(beltStack, i);
+                continue;
+            }
+
+            CardTier tier;
+            try {
+                tier = CardTier.valueOf(tierName);
+            } catch (Exception e) {
+                tier = null;
+            }
+
+            if (tier == null) {
                 BeltCards.clear(beltStack, i);
             } else {
                 BeltCards.set(beltStack, i, id, tier);

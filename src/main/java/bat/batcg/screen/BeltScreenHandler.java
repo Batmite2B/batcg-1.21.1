@@ -1,5 +1,6 @@
 package bat.batcg.screen;
 
+import bat.batcg.belt.BatcgBeltApi;
 import bat.batcg.belt.BeltCards;
 import bat.batcg.item.CardBeltItem;
 import bat.batcg.item.PokemonCardItem;
@@ -13,21 +14,22 @@ import net.minecraft.screen.slot.Slot;
 
 public class BeltScreenHandler extends ScreenHandler {
 
-    private final ItemStack beltStack;
+    private final PlayerEntity player;
     private final Inventory beltInv;
 
     public BeltScreenHandler(int syncId, PlayerInventory playerInv) {
         super(ModScreenHandlers.BELT, syncId);
+        this.player = playerInv.player;
 
-        // ✅ No usamos "handId" para evitar problemas: tomamos la mano que tenga el belt
-        ItemStack main = playerInv.player.getMainHandStack();
-        ItemStack off = playerInv.player.getOffHandStack();
-        this.beltStack = (main.getItem() instanceof CardBeltItem) ? main : off;
+        ItemStack beltStack = BatcgBeltApi.findBeltForScreen(this.player);
 
-        // Server: inventario real (escribe al ItemStack)
-        // Client: dummy (los slots se sincronizan igual)
-        if (playerInv.player.getWorld().isClient) this.beltInv = new SimpleInventory(BeltCards.SLOTS);
-        else this.beltInv = new BeltCardInventory(beltStack);
+        // Client: dummy
+        // Server: inventario real que escribe al ItemStack correcto
+        if (this.player.getWorld().isClient) {
+            this.beltInv = new SimpleInventory(BeltCards.SLOTS);
+        } else {
+            this.beltInv = new BeltCardInventory(beltStack);
+        }
 
         // 5 slots del belt
         int startX = 44;
@@ -42,7 +44,7 @@ public class BeltScreenHandler extends ScreenHandler {
         }
 
         // Inventario del jugador (3 filas)
-        int invY = 54;
+        int invY = 51;
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
                 this.addSlot(new Slot(playerInv, 9 + col + row * 9, 8 + col * 18, invY + row * 18));
@@ -50,7 +52,7 @@ public class BeltScreenHandler extends ScreenHandler {
         }
 
         // Hotbar
-        int hotbarY = 112;
+        int hotbarY = 109;
         for (int col = 0; col < 9; col++) {
             this.addSlot(new Slot(playerInv, col, 8 + col * 18, hotbarY));
         }
@@ -58,9 +60,9 @@ public class BeltScreenHandler extends ScreenHandler {
 
     @Override
     public boolean canUse(PlayerEntity player) {
-        ItemStack main = player.getMainHandStack();
-        ItemStack off = player.getOffHandStack();
-        return main.getItem() instanceof CardBeltItem || off.getItem() instanceof CardBeltItem;
+        // No cierres la GUI si el belt está en mano O equipado
+        ItemStack b = BatcgBeltApi.findBeltForScreen(player);
+        return !b.isEmpty() && (b.getItem() instanceof CardBeltItem);
     }
 
     @Override
@@ -89,5 +91,14 @@ public class BeltScreenHandler extends ScreenHandler {
         else slot.markDirty();
 
         return copy;
+    }
+
+    @Override
+    public void onClosed(PlayerEntity player) {
+        super.onClosed(player);
+        // Solo server debe persistir
+        if (!player.getWorld().isClient) {
+            this.beltInv.markDirty();
+        }
     }
 }

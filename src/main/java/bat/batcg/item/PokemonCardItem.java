@@ -19,48 +19,47 @@ public class PokemonCardItem extends Item {
     }
 
     public static ItemStack createCard(String pokemonId, CardTier tier) {
+        ModCardComponents.ensureInitialized();
+
         ItemStack stack = new ItemStack(ModItems.POKEMONCARD);
-        if (pokemonId != null) {
-            stack.set(ModCardComponents.POKEMON_ID, pokemonId.toLowerCase(Locale.ROOT));
-        }
-        stack.set(ModCardComponents.CARD_TIER, (tier == null ? CardTier.COMMON : tier).name());
+        stack.set(ModCardComponents.POKEMON_ID, pokemonId.toLowerCase(Locale.ROOT));
+        stack.set(ModCardComponents.CARD_TIER, tier.name());
         return stack;
     }
 
-
+    /** ✅ Getter seguro: devuelve null si no existe */
     public static String getPokemonId(ItemStack stack) {
+        if (stack == null || stack.isEmpty()) return null;
         String id = stack.get(ModCardComponents.POKEMON_ID);
-        return id == null ? "" : id;
+        return (id == null || id.isBlank()) ? null : id;
     }
 
+    /** ✅ Getter seguro: devuelve null si no existe / inválido */
     public static CardTier getTier(ItemStack stack) {
+        if (stack == null || stack.isEmpty()) return null;
         String tierName = stack.get(ModCardComponents.CARD_TIER);
-        if (tierName == null || tierName.isBlank()) return CardTier.COMMON;
+        if (tierName == null || tierName.isBlank()) return null;
 
         try {
-            return CardTier.valueOf(tierName.trim().toUpperCase(java.util.Locale.ROOT));
+            return CardTier.valueOf(tierName.trim().toUpperCase(Locale.ROOT));
         } catch (Exception ignored) {
-            return CardTier.COMMON;
+            return null;
         }
     }
 
-
-
-
+    // ✅ Nombre del item: color por rareza + estrella si SHINY
     @Override
     public Text getName(ItemStack stack) {
-        String pokemonId = stack.get(ModCardComponents.POKEMON_ID);
-        String tierName  = stack.get(ModCardComponents.CARD_TIER);
+        String pokemonId = getPokemonId(stack);
+        CardTier tier = getTier(stack);
 
-        if (pokemonId == null || pokemonId.isBlank()) {
+        if (pokemonId == null) {
             return Text.literal("Invalid Card").formatted(Formatting.RED);
         }
-
-        CardTier tier = safeTier(tierName);
+        if (tier == null) tier = CardTier.COMMON;
 
         MutableText name = getPokemonNameText(pokemonId).copy().formatted(tier.getColor());
 
-        // ⭐ solo para SHINY
         if (tier == CardTier.SHINY) {
             return Text.literal("★ ").formatted(Formatting.GOLD).append(name);
         }
@@ -68,17 +67,15 @@ public class PokemonCardItem extends Item {
         return name;
     }
 
-    // ✅ OJO: TooltipContext viene de Item (nested), NO se importa.
+    // ✅ Tooltip SIN nombre (solo rareza)
     @Override
-    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
-        String tierName = stack.get(ModCardComponents.CARD_TIER);
+    public void appendTooltip(ItemStack stack, Item.TooltipContext context, List<Text> tooltip, TooltipType type) {
+        CardTier tier = getTier(stack);
 
-        if (tierName == null || tierName.isBlank()) {
+        if (tier == null) {
             tooltip.add(Text.literal("Invalid Card").formatted(Formatting.RED));
             return;
         }
-
-        CardTier tier = safeTier(tierName);
 
         tooltip.add(
                 Text.literal("Rarity: ").formatted(Formatting.DARK_GRAY)
@@ -90,15 +87,6 @@ public class PokemonCardItem extends Item {
     // Helpers
     // -------------------------
 
-    private static CardTier safeTier(String tierName) {
-        if (tierName == null) return CardTier.COMMON;
-        try {
-            return CardTier.valueOf(tierName.trim().toUpperCase(Locale.ROOT));
-        } catch (Exception ignored) {
-            return CardTier.COMMON;
-        }
-    }
-
     private static MutableText getPokemonNameText(String pokemonId) {
         String clean = pokemonId.toLowerCase(Locale.ROOT).trim();
 
@@ -106,6 +94,7 @@ public class PokemonCardItem extends Item {
         String baseId = shiny ? clean.substring(0, clean.length() - "shiny".length()) : clean;
 
         String key = "pokemon.batcg." + baseId;
+
         MutableText name = Text.translatable(key);
 
         // fallback si no existe traducción

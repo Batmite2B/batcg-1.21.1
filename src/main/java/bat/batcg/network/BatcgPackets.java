@@ -4,6 +4,7 @@ import bat.batcg.card.CardTier;
 import bat.batcg.card.ModBoosterComponents;
 import bat.batcg.item.BoosterPackItem;
 import bat.batcg.item.PokemonCardItem;
+import bat.batcg.network.payload.OpenBeltC2SPayload;
 import bat.batcg.network.payload.OpenBoosterS2CPayload;
 import bat.batcg.network.payload.RevealCardC2SPayload;
 import bat.batcg.network.payload.RevealResultS2CPayload;
@@ -24,6 +25,7 @@ public final class BatcgPackets {
     private BatcgPackets() {}
 
     public static void registerPayloads() {
+        PayloadTypeRegistry.playC2S().register(OpenBeltC2SPayload.ID, OpenBeltC2SPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(OpenBoosterS2CPayload.ID, OpenBoosterS2CPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(RevealCardC2SPayload.ID, RevealCardC2SPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(RevealResultS2CPayload.ID, RevealResultS2CPayload.CODEC);
@@ -34,6 +36,19 @@ public final class BatcgPackets {
             ServerPlayerEntity player = context.player();
             context.server().execute(() -> handleReveal(player, payload.handOrdinal(), payload.slot()));
         });
+
+
+
+        ServerPlayNetworking.registerGlobalReceiver(OpenBeltC2SPayload.ID, (payload, context) -> {
+            context.server().execute(() -> {
+                bat.batcg.belt.BatcgBeltApi.openEquippedBeltScreen(context.player());
+            });
+        });
+
+
+
+
+
     }
 
     private static void handleReveal(ServerPlayerEntity player, int handOrdinal, int slot) {

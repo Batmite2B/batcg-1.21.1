@@ -154,5 +154,11 @@
   "item.batcg.pokemoncard": "Card",
   "item.batcg.booster_pack": "Booster Pack",
   "item.batcg.booster_pack_opened": "Booster Pack not completed",
-  "block.batcg.pokedollar": "PokeDollar"
+  "item.batcg.card_belt": "Card Belt",
+  "block.batcg.pokedollar": "PokeDollar",
+  "key.batcg.open_belt": "Open Belt",
+  "category.batcg": "BATCG",
+  "screen.batcg.belt": "Card Belt"
+
+
 }

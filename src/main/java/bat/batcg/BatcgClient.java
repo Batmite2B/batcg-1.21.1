@@ -1,5 +1,6 @@
 package bat.batcg;
 
+import bat.batcg.client.BatcgBeltKeybinds;
 import bat.batcg.client.BatcgModelLoading;
 import bat.batcg.client.render.PokemonCardItemRenderer;
 import bat.batcg.client.screen.BoosterPackScreen;
@@ -39,6 +40,8 @@ public class BatcgClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
+
+
         HandledScreens.register(ModScreenHandlers.BELT, BeltScreen::new);
 
 
@@ -47,6 +50,10 @@ public class BatcgClient implements ClientModInitializer {
 
         // ✅ 1) Registrar TODOS los modelos extra (frames + icons)
         BatcgModelLoading.init();
+
+        BatcgBeltKeybinds.init();
+
+
 
         // ✅ 2) Registrar el renderer del item de carta (para inventario / mano / suelo / GUI)
         BuiltinItemRendererRegistry.INSTANCE.register(bat.batcg.item.ModItems.POKEMONCARD, PokemonCardItemRenderer.INSTANCE);
