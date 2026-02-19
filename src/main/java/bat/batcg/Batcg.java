@@ -4,6 +4,7 @@ import bat.batcg.belt.ModBeltComponents;
 import bat.batcg.block.ModBlocks;
 import bat.batcg.card.ModBoosterComponents;
 import bat.batcg.card.ModCardComponents;
+import bat.batcg.command.ModCommands;
 import bat.batcg.item.ModItems;
 import bat.batcg.network.BatcgPackets;
 import bat.batcg.screen.ModScreenHandlers;
@@ -25,6 +26,8 @@ public class Batcg implements ModInitializer {
 		ModBeltComponents.initialize();
 
 		ModScreenHandlers.init();
+
+		ModCommands.register();
 
 		// Networking (incluye OpenBeltC2SPayload) -> SOLO aquí
 		BatcgPackets.registerPayloads();
