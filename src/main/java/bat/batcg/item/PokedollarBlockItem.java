@@ -1,6 +1,8 @@
 package bat.batcg.item;
 
+import bat.batcg.advancement.BatcgAdvancements;
 import bat.batcg.block.PokedollarBlock;
+import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
@@ -8,6 +10,7 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ItemStackParticleEffect;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -15,9 +18,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import net.minecraft.advancement.criterion.Criteria;
-import net.minecraft.server.network.ServerPlayerEntity;
-
 
 public class PokedollarBlockItem extends BlockItem {
 
@@ -50,6 +50,12 @@ public class PokedollarBlockItem extends BlockItem {
 
                     int added = Math.max(1, afterLayers - beforeLayers);
                     boolean becameFull = (beforeLayers < 16 && afterLayers == 16);
+
+                    // ✅ Advancement al llegar a 16
+                    if (becameFull && ctx.getPlayer() instanceof ServerPlayerEntity sp) {
+                        // Si tu ID fuera batcg:batcg/pokedollar_full_stack, aquí usarías "batcg/pokedollar_full_stack"
+                        BatcgAdvancements.grant(sp, "pokedollar_full_stack", "done");
+                    }
 
                     playCoinSound(world, pos, becameFull);
                     spawnCoinParticles(world, pos, added, afterLayers, becameFull);
@@ -94,18 +100,24 @@ public class PokedollarBlockItem extends BlockItem {
 
         if (!world.isClient) {
             world.setBlockState(pos, newState, Block.NOTIFY_ALL);
-            // ✅ Dispara el trigger vanilla para que funcione el advancement (placed_block)
+
+            // (Opcional) trigger vanilla. Ya NO dependemos de esto para el advancement.
             if (ctx.getPlayer() instanceof ServerPlayerEntity sp) {
                 ItemStack used = ctx.getStack().copy();
-                used.setCount(1); // el criterio espera el item usado, no importa el count real
+                used.setCount(1);
                 Criteria.PLACED_BLOCK.trigger(sp, pos, used);
             }
-
 
             if (!creative) ctx.getStack().decrement(add);
 
             int finalLayers = newState.get(PokedollarBlock.LAYERS);
             boolean becameFull = (currentLayers < 16 && finalLayers == 16);
+
+            // ✅ Advancement al llegar a 16
+            if (becameFull && ctx.getPlayer() instanceof ServerPlayerEntity sp) {
+                // Si tu ID fuera batcg:batcg/pokedollar_full_stack, aquí usarías "batcg/pokedollar_full_stack"
+                BatcgAdvancements.grant(sp, "pokedollar_full_stack", "done");
+            }
 
             playCoinSound(world, pos, becameFull);
             spawnCoinParticles(world, pos, add, finalLayers, becameFull);
@@ -116,11 +128,9 @@ public class PokedollarBlockItem extends BlockItem {
 
     // ✅ Mismo sonido siempre + extra cuando llegas a 16
     private void playCoinSound(World world, BlockPos pos, boolean becameFullStack) {
-        // Sonido de “moneda” que te gustó
         world.playSound(null, pos, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP,
                 SoundCategory.BLOCKS, 0.8f, 1.15f);
 
-        // “OMG” al completar la pila
         if (becameFullStack) {
             world.playSound(null, pos, SoundEvents.ENTITY_PLAYER_LEVELUP,
                     SoundCategory.BLOCKS, 0.9f, 1.0f);
@@ -131,7 +141,6 @@ public class PokedollarBlockItem extends BlockItem {
     private void spawnCoinParticles(World world, BlockPos pos, int added, int finalLayers, boolean becameFullStack) {
         if (!(world instanceof ServerWorld sw)) return;
 
-        // altura del tope según layers (1..16)
         double topY = pos.getY() + (finalLayers / 16.0) + 0.05;
         double x = pos.getX() + 0.5;
         double z = pos.getZ() + 0.5;
@@ -141,20 +150,14 @@ public class PokedollarBlockItem extends BlockItem {
                 new ItemStack(this)
         );
 
-        // Siempre visibles: más cantidad, salen desde arriba
         int coinCount = 10 + (added * 6);
         double spread = 0.22;
 
         sw.spawnParticles(coinFx, x, topY, z, coinCount, spread, 0.06, spread, 0.04);
 
-
-        // OMG pila completa
         if (becameFullStack) {
-
             sw.spawnParticles(ParticleTypes.TOTEM_OF_UNDYING, x, topY + 0.05, z,
                     25, 0.30, 0.18, 0.30, 0.05);
-
-
         }
     }
 }

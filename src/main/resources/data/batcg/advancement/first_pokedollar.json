@@ -1,0 +1,22 @@
+{
+  "parent": "batcg:root",
+  "display": {
+    "icon": { "id": "batcg:pokedollar" },
+    "title": "Pokédollar en mano",
+    "description": "Obtén un Pokédollar.",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "has": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          { "items": ["batcg:pokedollar"], "count": { "min": 1 } }
+        ]
+      }
+    }
+  }
+}

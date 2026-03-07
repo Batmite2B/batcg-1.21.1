@@ -15,7 +15,8 @@ import bat.batcg.block.ModBlocks;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.render.RenderLayer;
-
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.minecraft.client.render.RenderLayer;
 // ✅ Belt feature renderer registration
 import bat.batcg.client.render.BeltFeatureRenderer;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
@@ -29,6 +30,8 @@ import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import bat.batcg.client.screen.BeltScreen;
 import bat.batcg.screen.ModScreenHandlers;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
+import bat.batcg.client.screen.GradeStationScreen;
+
 
 
 
@@ -40,8 +43,8 @@ public class BatcgClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
-
-
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.GRADE_STATION, RenderLayer.getCutout());
+        HandledScreens.register(ModScreenHandlers.GRADE_STATION, GradeStationScreen::new);
         HandledScreens.register(ModScreenHandlers.BELT, BeltScreen::new);
 
 

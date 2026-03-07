@@ -1,0 +1,15 @@
+{
+  "display": {
+    "icon": { "id": "batcg:booster_pack" },
+    "title": "BATCG",
+    "description": "Progress BATCG in Minecraft.",
+    "background": "minecraft:textures/gui/advancements/backgrounds/stone.png",
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "tick": { "trigger": "minecraft:tick" }
+  }
+}

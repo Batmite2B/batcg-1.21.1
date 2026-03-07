@@ -1,0 +1,13 @@
+{
+  "parent": "batcg:root",
+  "display": {
+    "icon": { "id": "batcg:booster_pack" },
+    "title": "First Reveal",
+    "description": "Open your first Booster Pack",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "done": { "trigger": "minecraft:impossible" } }
+}

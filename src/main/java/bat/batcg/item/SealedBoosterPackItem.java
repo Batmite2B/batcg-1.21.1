@@ -12,6 +12,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
+import bat.batcg.advancement.BatcgAdvancements;
 
 /**
  * Booster sellado (stackeable). No guarda estado.
@@ -50,8 +51,12 @@ public class SealedBoosterPackItem extends Item {
             sp.setStackInHand(hand, opened);
 
             ServerPlayNetworking.send(sp, new OpenBoosterS2CPayload(hand.ordinal(), 0));
+            BatcgAdvancements.grant(sp, "open_first_booster", "done");
             return TypedActionResult.success(opened, false);
         }
+
+
+
 
         // Caso 2: stack > 1 -> NO movemos el stack principal; ponemos el OPENED en OFFHAND
         if (!sp.getOffHandStack().isEmpty()) {
@@ -71,7 +76,11 @@ public class SealedBoosterPackItem extends Item {
 
         // Abrimos la UI apuntando a OFFHAND
         ServerPlayNetworking.send(sp, new OpenBoosterS2CPayload(Hand.OFF_HAND.ordinal(), 0));
-
+        BatcgAdvancements.grant(sp, "open_first_booster", "done");
         return TypedActionResult.success(sealedStack, false);
+
+
     }
+
+
 }

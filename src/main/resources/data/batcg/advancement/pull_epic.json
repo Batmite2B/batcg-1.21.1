@@ -1,0 +1,13 @@
+{
+  "parent": "batcg:complete_pack",
+  "display": {
+    "icon": { "id": "batcg:pokemoncard" },
+    "title": "¡EPIC!",
+    "description": "Reveal an EPIC card.",
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "done": { "trigger": "minecraft:impossible" } }
+}

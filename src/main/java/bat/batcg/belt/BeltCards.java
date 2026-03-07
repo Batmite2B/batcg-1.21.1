@@ -16,14 +16,14 @@ public final class BeltCards {
     private static final String ROOT_KEY = "batcg_belt_cards";
     private static final String KEY_ID = "id";
     private static final String KEY_TIER = "tier";
+    private static final String KEY_GRADE = "grade"; // ✅ NEW
 
-    public record SlotData(int slot, String pokemonId, CardTier tier) {
+    public record SlotData(int slot, String pokemonId, CardTier tier, int grade) {
         public boolean isEmpty() {
             return pokemonId == null || pokemonId.isBlank() || tier == null;
         }
-
         public static SlotData empty(int slot) {
-            return new SlotData(slot, null, null);
+            return new SlotData(slot, null, null, 0);
         }
     }
 
@@ -45,18 +45,23 @@ public final class BeltCards {
         try {
             tier = (tierName == null || tierName.isBlank()) ? null
                     : CardTier.valueOf(tierName.trim().toUpperCase(java.util.Locale.ROOT));
-
         } catch (Exception e) {
             tier = null;
         }
-
-        // Si tier inválido -> tratamos el slot como vacío (evita crashes y renders raros)
         if (tier == null) return SlotData.empty(slot);
 
-        return new SlotData(slot, id, tier);
+        int grade = entry.contains(KEY_GRADE, NbtElement.INT_TYPE) ? entry.getInt(KEY_GRADE) : 0;
+        grade = Math.max(0, Math.min(4, grade));
+
+        return new SlotData(slot, id, tier, grade);
     }
 
+    // Backwards compatible
     public static void set(ItemStack belt, int slot, String pokemonId, CardTier tier) {
+        set(belt, slot, pokemonId, tier, 0);
+    }
+
+    public static void set(ItemStack belt, int slot, String pokemonId, CardTier tier, int grade) {
         if (belt.isEmpty() || slot < 0 || slot >= SLOTS) return;
 
         if (pokemonId == null || pokemonId.isBlank() || tier == null) {
@@ -70,6 +75,7 @@ public final class BeltCards {
         NbtCompound entry = new NbtCompound();
         entry.putString(KEY_ID, pokemonId);
         entry.putString(KEY_TIER, tier.name());
+        entry.putInt(KEY_GRADE, Math.max(0, Math.min(4, grade)));
         list.set(slot, entry);
 
         writeList(belt, list);
@@ -92,13 +98,7 @@ public final class BeltCards {
             SlotData d = get(belt, i);
             if (!d.isEmpty()) return d;
         }
-        return null; // ✅ importante: si no hay cartas, retorna null
-    }
-
-    public static int getFilledCount(ItemStack belt) {
-        int c = 0;
-        for (int i = 0; i < SLOTS; i++) if (!isEmpty(belt, i)) c++;
-        return c;
+        return null;
     }
 
     // ---------- CUSTOM_DATA helpers ----------
@@ -135,4 +135,16 @@ public final class BeltCards {
         while (list.size() < size) list.add(new NbtCompound());
         while (list.size() > size) list.remove(list.size() - 1);
     }
+
+    public static int getFilledCount(ItemStack belt) {
+        if (belt == null || belt.isEmpty()) return 0;
+
+        int count = 0;
+        for (int i = 0; i < SLOTS; i++) {
+            SlotData d = get(belt, i);
+            if (d != null && !d.isEmpty()) count++;
+        }
+        return count;
+    }
+
 }

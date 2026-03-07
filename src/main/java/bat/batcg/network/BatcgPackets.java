@@ -19,22 +19,38 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import bat.batcg.advancement.BatcgAdvancements;
+import bat.batcg.belt.LeaderPowerUse;
+import bat.batcg.network.payload.UseLeaderPowerC2SPayload;
+import bat.batcg.belt.LeaderPowerUse;
+import bat.batcg.network.payload.UseLeaderPowerC2SPayload;
 
 public final class BatcgPackets {
 
     private BatcgPackets() {}
 
     public static void registerPayloads() {
+
         PayloadTypeRegistry.playC2S().register(OpenBeltC2SPayload.ID, OpenBeltC2SPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(OpenBoosterS2CPayload.ID, OpenBoosterS2CPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(RevealCardC2SPayload.ID, RevealCardC2SPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(RevealResultS2CPayload.ID, RevealResultS2CPayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(UseLeaderPowerC2SPayload.ID, UseLeaderPowerC2SPayload.CODEC);
+
     }
+
 
     public static void initServerReceivers() {
         ServerPlayNetworking.registerGlobalReceiver(RevealCardC2SPayload.ID, (payload, context) -> {
             ServerPlayerEntity player = context.player();
             context.server().execute(() -> handleReveal(player, payload.handOrdinal(), payload.slot()));
+        });
+
+
+
+        ServerPlayNetworking.registerGlobalReceiver(UseLeaderPowerC2SPayload.ID, (payload, context) -> {
+            ServerPlayerEntity player = context.player();
+            context.server().execute(() -> LeaderPowerUse.tryUse(player, payload.forward(), payload.strafe()));
         });
 
 
@@ -68,6 +84,17 @@ public final class BatcgPackets {
         ItemStack card = PokemonCardItem.createCard(result.pokemonId(), result.tier());
         giveOrDrop(player, card);
 
+        BatcgAdvancements.grant(player, "reveal_first_card", "done");
+
+        if (result.tier() == CardTier.EPIC) {
+            BatcgAdvancements.grant(player, "pull_epic", "done");
+        } else if (result.tier() == CardTier.LEGENDARY) {
+            BatcgAdvancements.grant(player, "pull_legendary", "done");
+        } else if (result.tier() == CardTier.SHINY) {
+            BatcgAdvancements.grant(player, "pull_shiny", "done");
+        }
+
+
         // ✅ FX al revelar
         playRevealFx(player, result.tier());
 
@@ -83,7 +110,13 @@ public final class BatcgPackets {
         // ✅ FX al completar pack
         if ((mask & 0b111) == 0b111) {
             playPackCompleteFx(player);
+
+            BatcgAdvancements.grant(player, "complete_pack", "done");
+
             stack.decrement(1);
+
+
+
         }
     }
 

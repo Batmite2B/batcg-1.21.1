@@ -1,7 +1,9 @@
 package bat.batcg;
 
+import bat.batcg.belt.BeltHooks; // ✅ ADD
 import bat.batcg.belt.ModBeltComponents;
 import bat.batcg.block.ModBlocks;
+import bat.batcg.block.entity.ModBlockEntities;
 import bat.batcg.card.ModBoosterComponents;
 import bat.batcg.card.ModCardComponents;
 import bat.batcg.command.ModCommands;
@@ -24,14 +26,15 @@ public class Batcg implements ModInitializer {
 		ModCardComponents.initialize();
 		ModBoosterComponents.initialize();
 		ModBeltComponents.initialize();
+		ModBlockEntities.init();
 
 		ModScreenHandlers.init();
-
 		ModCommands.register();
 
-		// Networking (incluye OpenBeltC2SPayload) -> SOLO aquí
 		BatcgPackets.registerPayloads();
 		BatcgPackets.initServerReceivers();
+
+		BeltHooks.init(); // ✅ ADD (esto hace que se apliquen los atributos del cinturón)
 
 		LOGGER.info("BATCG LOADED!");
 	}

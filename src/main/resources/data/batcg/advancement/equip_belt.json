@@ -1,0 +1,13 @@
+{
+  "parent": "batcg:root",
+  "display": {
+    "icon": { "id": "batcg:card_belt" },
+    "title": "Listo para el combate",
+    "description": "Equipa tu Card Belt.",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "done": { "trigger": "minecraft:impossible" } }
+}

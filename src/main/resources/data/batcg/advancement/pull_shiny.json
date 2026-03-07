@@ -1,0 +1,14 @@
+{
+  "parent": "batcg:pull_legendary",
+  "display": {
+    "icon": { "id": "batcg:pokemoncard" },
+    "title": "¡¡SHINY!!",
+    "description": "Reveal a SHINY card.",
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "done": { "trigger": "minecraft:impossible" } },
+  "rewards": { "experience": 150 }
+}

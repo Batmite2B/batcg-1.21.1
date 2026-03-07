@@ -14,6 +14,7 @@ public final class BeltHooks {
     private static void onTick(MinecraftServer server) {
         for (var player : server.getPlayerManager().getPlayerList()) {
             BeltEffects.apply(player);
+            LeaderActivePowers.tick(player); // ✅ era "sp"
         }
     }
 }

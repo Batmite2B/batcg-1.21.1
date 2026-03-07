@@ -1,0 +1,14 @@
+{
+  "parent": "batcg:pull_epic",
+  "display": {
+    "icon": { "id": "batcg:pokemoncard" },
+    "title": "LEGENDARY",
+    "description": "Reveal a LEGENDARY card.",
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "done": { "trigger": "minecraft:impossible" } },
+  "rewards": { "experience": 75 }
+}

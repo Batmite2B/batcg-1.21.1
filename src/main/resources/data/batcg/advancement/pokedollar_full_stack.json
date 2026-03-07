@@ -1,0 +1,16 @@
+{
+  "parent": "batcg:root",
+  "display": {
+    "icon": { "id": "batcg:pokedollar" },
+    "title": "¡Pila completa de Pokédollars!",
+    "description": "Llega a 16 capas de Pokédollars en el suelo.",
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "done": { "trigger": "minecraft:impossible" }
+  },
+  "rewards": { "experience": 50 }
+}

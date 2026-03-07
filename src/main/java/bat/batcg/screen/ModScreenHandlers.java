@@ -1,6 +1,8 @@
 package bat.batcg.screen;
 
 import bat.batcg.Batcg;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
@@ -16,10 +18,14 @@ public final class ModScreenHandlers {
                     new ScreenHandlerType<>(BeltScreenHandler::new, FeatureFlags.VANILLA_FEATURES)
             );
 
+    public static final ScreenHandlerType<GradeStationScreenHandler> GRADE_STATION =
+            Registry.register(
+                    Registries.SCREEN_HANDLER,
+                    Identifier.of(Batcg.MOD_ID, "grade_station"),
+                    new ScreenHandlerType<>(GradeStationScreenHandler::new, FeatureFlags.VANILLA_FEATURES)
+            );
+
     private ModScreenHandlers() {}
 
-    /** Llamar desde Batcg.onInitialize() */
-    public static void init() {
-        // solo para forzar carga/registro
-    }
+    public static void init() { }
 }

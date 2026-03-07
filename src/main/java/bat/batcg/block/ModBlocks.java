@@ -36,6 +36,12 @@ public class ModBlocks {
     }
 
 
+    public static final Block GRADE_STATION = registerBlock(
+            "grade_station",
+            new GradeStationBlock(AbstractBlock.Settings.create().strength(2.5f).nonOpaque())
+    );
+
+
     public static void RegisterModBlocks() {
         Batcg.LOGGER.info("Registering Mod Blocks for " + Batcg.MOD_ID);
 

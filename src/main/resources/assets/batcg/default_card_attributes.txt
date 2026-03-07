@@ -1,0 +1,154 @@
+# BATCG - Card Attributes (Gen 1 / 151)
+# Armor buffed (x6) and snapped to 0.5 steps for clarity.
+
+001bulbasaur mining=0.05 armor=1.5 health=0.6
+002ivysaur mining=0.06 armor=2 health=0.8
+003venusaur mining=0.07 armor=2 health=1
+004charmander attack=0.35 attackspeed=0.08 speed=0.01
+005charmeleon attack=0.45 attackspeed=0.1 speed=0.01
+006charizard attack=0.55 attackspeed=0.12 luck=0.15
+007squirtle armor=2 health=0.7 knockbackres=0.03
+008wartortle armor=2 health=0.9 knockbackres=0.04
+009blastoise armor=2.5 health=1.1 knockbackres=0.05
+010caterpie mining=0.05 attackspeed=0.05
+011metapod armor=1.5 knockbackres=0.03
+012butterfree speed=0.01 luck=0.25 attackspeed=0.06
+013weedle attackspeed=0.06 luck=0.15
+014kakuna armor=1.5 knockbackres=0.03
+015beedrill attack=0.45 attackspeed=0.12
+016pidgey speed=0.01 luck=0.12
+017pidgeotto speed=0.01 luck=0.14 attack=0.2
+018pidgeot speed=0.02 luck=0.18 attack=0.28
+019rattata speed=0.01 attackspeed=0.08
+020raticate speed=0.02 attackspeed=0.1 attack=0.2
+021spearow speed=0.01 attack=0.25
+022fearow speed=0.02 attack=0.35
+023ekans attack=0.25 armor=1 luck=0.1
+024arbok attack=0.35 armor=1 knockbackres=0.03
+025pikachu speed=0.02 attackspeed=0.1 mining=0.03
+026raichu speed=0.02 attackspeed=0.12 attack=0.25
+027sandshrew mining=0.08 armor=1.5 knockbackres=0.03
+028sandslash mining=0.1 armor=2 knockbackres=0.04
+029nidoranf attack=0.22 armor=1 luck=0.1
+030nidorina attack=0.28 armor=1.5 luck=0.12
+031nidoqueen attack=0.4 armor=2 knockbackres=0.05
+032nidoranm attack=0.25 armor=1 speed=0.01
+033nidorino attack=0.32 armor=1 knockbackres=0.04 speed=0.01
+034nidoking attack=0.45 armor=1.5 knockbackres=0.04
+035clefairy health=1 luck=0.22
+036clefable health=1.2 luck=0.3 armor=1 knockbackres=0.02
+037vulpix speed=0.01 luck=0.18
+038ninetales speed=0.02 luck=0.3 attack=0.25
+039jigglypuff health=1.2 luck=0.18
+040wigglytuff health=1.5 luck=0.25 armor=1
+041zubat speed=0.02 attackspeed=0.06
+042golbat speed=0.02 attackspeed=0.1 attack=0.22
+043oddish mining=0.06 armor=1
+044gloom mining=0.07 armor=1 luck=0.1
+045vileplume mining=0.08 armor=1.5 health=0.6
+046paras mining=0.08 attackspeed=0.05
+047parasect mining=0.1 armor=1.5 attack=0.25
+048venonat luck=0.2 speed=0.01
+049venomoth luck=0.3 speed=0.01 attackspeed=0.08
+050diglett mining=0.1 speed=0.01
+051dugtrio mining=0.12 speed=0.02 attackspeed=0.06
+052meowth luck=0.3 speed=0.01
+053persian luck=0.35 speed=0.02 attackspeed=0.08
+054psyduck mining=0.05 luck=0.15 health=0.6
+055golduck mining=0.06 luck=0.2 speed=0.01
+056mankey attack=0.35 attackspeed=0.1
+057primeape attack=0.45 attackspeed=0.12 knockbackres=0.03
+058growlithe attack=0.35 speed=0.01 luck=0.1
+059arcanine attack=0.5 speed=0.01 luck=0.15
+060poliwag speed=0.01 attackspeed=0.06 luck=0.1
+061poliwhirl speed=0.01 attackspeed=0.08 armor=1
+062poliwrath attack=0.42 armor=1.5 knockbackres=0.05
+063abra luck=0.3 speed=0.01
+064kadabra luck=0.35 speed=0.01 attackspeed=0.08
+065alakazam luck=0.45 speed=0.02 attackspeed=0.1
+066machop attack=0.35 armor=1 knockbackres=0.03
+067machoke attack=0.42 armor=1.5 knockbackres=0.04
+068machamp attack=0.55 armor=2 knockbackres=0.06
+069bellsprout mining=0.06 attack=0.22
+070weepinbell mining=0.07 attack=0.28 luck=0.1
+071victreebel mining=0.08 attack=0.4 attackspeed=0.08
+072tentacool speed=0.01 armor=1 luck=0.12
+073tentacruel speed=0.01 armor=1.5 luck=0.18
+074geodude mining=0.1 armor=2 knockbackres=0.05
+075graveler mining=0.12 armor=2 knockbackres=0.06
+076golem mining=0.14 armor=2.5 knockbackres=0.08
+077ponyta speed=0.01 attack=0.3
+078rapidash speed=0.02 attack=0.4 luck=0.1
+079slowpoke health=1.2 armor=1.5
+080slowbro health=1.4 armor=2 knockbackres=0.04
+081magnemite mining=0.06 knockbackres=0.04 luck=0.1
+082magneton mining=0.08 knockbackres=0.06 luck=0.15
+083farfetchd luck=0.25 attack=0.3 attackspeed=0.05
+084doduo speed=0.02 attackspeed=0.08
+085dodrio speed=0.02 attackspeed=0.12 attack=0.25
+086seel health=1 armor=1
+087dewgong health=1.2 armor=1.5 knockbackres=0.03
+088grimer armor=1.5 knockbackres=0.04
+089muk armor=2 knockbackres=0.06 health=0.6
+090shellder armor=1.5 knockbackres=0.04
+091cloyster armor=2.5 knockbackres=0.06 mining=0.04
+092gastly attackspeed=0.06 luck=0.2 speed=0.01
+093haunter attackspeed=0.1 luck=0.25 speed=0.01
+094gengar attackspeed=0.14 luck=0.3 speed=0.02
+095onix armor=3 knockbackres=0.08 mining=0.08
+096drowzee luck=0.22 health=0.8
+097hypno luck=0.3 health=1 armor=1
+098krabby mining=0.06 attack=0.35
+099kingler mining=0.08 attack=0.5 knockbackres=0.03
+100voltorb speed=0.02 attackspeed=0.08
+101electrode speed=0.02 attackspeed=0.1 luck=0.1
+102exeggcute health=0.9 luck=0.18 armor=1
+103exeggutor health=1.2 luck=0.25 armor=1.5
+104cubone armor=1.5 attack=0.28 knockbackres=0.04
+105marowak armor=2 attack=0.4 knockbackres=0.06
+106hitmonlee speed=0.02 attack=0.45
+107hitmonchan attackspeed=0.14 attack=0.4
+108lickitung health=1.3 luck=0.15 knockbackres=0.03
+109koffing armor=1 luck=0.12 knockbackres=0.02
+110weezing armor=2 luck=0.18 knockbackres=0.04
+111rhyhorn mining=0.1 armor=2.5 knockbackres=0.06
+112rhydon mining=0.12 armor=3 knockbackres=0.08 attack=0.2
+113chansey health=2 luck=0.35
+114tangela mining=0.08 armor=1.5 health=0.6
+115kangaskhan health=1.4 attack=0.35 armor=1 knockbackres=0.02
+116horsea speed=0.01 luck=0.18
+117seadra speed=0.01 luck=0.22 attack=0.2
+118goldeen speed=0.01 attack=0.28
+119seaking speed=0.01 attack=0.38 knockbackres=0.02
+120staryu speed=0.01 luck=0.22 mining=0.03
+121starmie speed=0.02 luck=0.3 mining=0.04
+122mrmime luck=0.35 speed=0.01 armor=1
+123scyther attack=0.45 speed=0.02 attackspeed=0.1
+124jynx luck=0.35 attackspeed=0.1 speed=0.01
+125electabuzz speed=0.02 attackspeed=0.12 attack=0.25
+126magmar attack=0.5 attackspeed=0.12 speed=0.01
+127pinsir attack=0.5 armor=2 knockbackres=0.06
+128tauros attack=0.45 speed=0.02 knockbackres=0.03
+129magikarp luck=0.25
+130gyarados attack=0.7 health=1 knockbackres=0.06
+131lapras health=1.6 armor=2 luck=0.2
+132ditto luck=0.3 attackspeed=0.06 speed=0.01
+133eevee luck=0.25 speed=0.01
+134vaporeon health=1.4 armor=1.5 luck=0.1
+135jolteon speed=0.02 attackspeed=0.12 luck=0.1
+136flareon attack=0.65 knockbackres=0.04 attackspeed=0.06
+137porygon mining=0.06 luck=0.28 attackspeed=0.06
+138omanyte mining=0.1 armor=1.5 luck=0.1
+139omastar mining=0.12 armor=2 luck=0.12
+140kabuto mining=0.08 attack=0.3 armor=1
+141kabutops mining=0.1 attack=0.5 attackspeed=0.08
+142aerodactyl speed=0.02 attack=0.45 luck=0.12
+143snorlax health=2 armor=2.5 knockbackres=0.08
+144articuno armor=2 knockbackres=0.05 luck=0.3 health=0.8
+145zapdos speed=0.02 attackspeed=0.12 luck=0.25
+146moltres attack=0.6 attackspeed=0.12 luck=0.2
+147dratini attack=0.35 health=0.7 luck=0.12
+148dragonair attack=0.45 health=0.9 luck=0.15
+149dragonite attack=0.65 health=1.2 knockbackres=0.05
+150mewtwo attack=0.9 attackspeed=0.25 luck=0.4 speed=0.01
+151mew luck=0.5 speed=0.02 attackspeed=0.12 mining=0.04

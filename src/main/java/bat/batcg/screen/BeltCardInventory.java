@@ -22,7 +22,9 @@ public class BeltCardInventory implements Inventory {
             if (d == null || d.isEmpty()) {
                 stacks.set(i, ItemStack.EMPTY);
             } else {
-                stacks.set(i, PokemonCardItem.createCard(d.pokemonId(), d.tier()));
+                ItemStack card = PokemonCardItem.createCard(d.pokemonId(), d.tier());
+                bat.batcg.card.CardGradeData.setGrade(card, d.grade());
+                stacks.set(i, card);
             }
         }
     }
@@ -105,7 +107,8 @@ public class BeltCardInventory implements Inventory {
             if (tier == null) {
                 BeltCards.clear(beltStack, i);
             } else {
-                BeltCards.set(beltStack, i, id, tier);
+                int grade = bat.batcg.card.CardGradeData.getGrade(s);
+                BeltCards.set(beltStack, i, id, tier, grade);
             }
         }
     }

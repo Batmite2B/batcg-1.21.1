@@ -1,0 +1,23 @@
+{
+  "parent": "batcg:collector_10",
+  "display": {
+    "icon": { "id": "batcg:pokemoncard" },
+    "title": "Hoarder",
+    "description": "Ten 50 cartas en tu inventario.",
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "c": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          { "items": ["batcg:pokemoncard"], "count": { "min": 50 } }
+        ]
+      }
+    }
+  },
+  "rewards": { "experience": 100 }
+}
